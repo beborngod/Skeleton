@@ -26,7 +26,8 @@
 	background-color: rgb(65, 65, 65);
 }
 QTextEdit {
-	background-color: rgb(88, 88, 88);
+	background-color: rgb(88, 88, 88);	
+	color: rgb(255, 255, 255);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">

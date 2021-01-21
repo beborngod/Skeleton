@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
 
     splitter = new QSplitter(Qt::Horizontal,this);
+    splitter->setStyleSheet("background-color : rgb(88,88,88);");
 
     edit = new QTextEdit(this);
 

@@ -13,6 +13,7 @@
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QTextEdit>
+#include <QStackedWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,7 +26,7 @@ class MainWindow : public QMainWindow
     QSplitter *splitter;
     QTextEdit *edit;
     QTextEdit *second_edit;
-    QWidget *focus;
+    QTextEdit *focus;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -36,5 +37,6 @@ protected slots:
     void zoomTextIn();
     void zoomTextOut();
     void splitDisplay();
+    void playSnake();
     void clear();
 };

@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="zoom_out.svg">images/zoom_out.svg</file>
+        <file alias="zoom_in.svg">images/zoom_in.svg</file>
+        <file alias="human-skull.svg">images/human-skull.svg</file>
+        <file alias="file.svg">images/file.svg</file>
+        <file alias="045-file.svg">images/045-file.svg</file>
+        <file alias="026-gamepad.svg">images/026-gamepad.svg</file>
+        <file alias="017-trash.svg">images/017-trash.svg</file>
+        <file alias="013-layers.svg">images/013-layers.svg</file>
+        <file alias="012-edit.svg">images/012-edit.svg</file>
+    </qresource>
+</RCC>

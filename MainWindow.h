@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     QSplitter *splitter;
     QTextEdit *edit;
     QTextEdit *second_edit;
-    QTextEdit *focus;
+    QTextEdit *focus_edit;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

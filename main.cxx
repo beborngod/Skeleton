@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     MainWindow window;
     window.setWindowTitle("Skeleton");
     window.resize(1000,700);
-    window.setWindowIcon(QIcon("human-skull.svg"));
+    window.setWindowIcon(QIcon(":/human-skull.svg"));
 
     /*QFile styleSheetFile("NAME_OF.qss");
     styleSheetFile.open(QFile::ReadOnly);

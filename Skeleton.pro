@@ -9,11 +9,13 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Snake/Snake.cxx \
     main.cxx \
     MainWindow.cxx
 
 HEADERS += \
-    MainWindow.h
+    MainWindow.h \
+    Snake/Snake.h
 
 FORMS += \
     MainWindow.ui
@@ -24,6 +26,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    Snake/LICENSE \
+    Snake/apple.png \
+    Snake/dot.png \
+    Snake/head.png \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle.properties \
@@ -35,3 +41,5 @@ DISTFILES += \
 android: include(/home/dexter/Android/Sdk/android_openssl/openssl.pri)
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+RESOURCES = images.qrc

@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "Snake/Snake.h"
+#include <QResource>
 
 static int zoom_first_window = 0;
 static int zoom_second_window = 0;
@@ -18,15 +19,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     setCentralWidget(splitter);
 
-
-    QPixmap newPix("file.svg");
-    QPixmap openPix("045-file.svg");
-    QPixmap savePix("012-edit.svg");
-    QPixmap minusPix("zoom_out.svg");
-    QPixmap plusPix("zoom_in.svg");
-    QPixmap clearPix("017-trash.svg");
-    QPixmap splitPix("013-layers.svg");
-    QPixmap snakePix("026-gamepad.svg");
+    QPixmap newPix(":/file.svg");
+    QPixmap openPix(":/045-file.svg");
+    QPixmap savePix(":/012-edit.svg");
+    QPixmap minusPix(":/zoom_out.svg");
+    QPixmap plusPix(":/zoom_in.svg");
+    QPixmap clearPix(":/017-trash.svg");
+    QPixmap splitPix(":/013-layers.svg");
+    QPixmap snakePix(":/026-gamepad.svg");
 
     auto newFile = ui->toolbar->addAction(QIcon(newPix),"New file");
     auto openFile = ui->toolbar->addAction(QIcon(openPix),"Open file");
@@ -51,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(split,&QAction::triggered, this, &MainWindow::splitDisplay);
 
     connect(snakeGame,&QAction::triggered,this,&MainWindow::playSnake);
+
+    QResource *images_rc = new QResource("images.qrc");
+    images_rc->data();
 }
 
 MainWindow::~MainWindow()
@@ -156,8 +159,8 @@ void MainWindow::splitDisplay()
 
 void MainWindow::playSnake()
 {
-    Snake s;
-    s.show();
+    Snake *s = new Snake(this);
+    s->show();
 }
 
 void MainWindow::clear()

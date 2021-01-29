@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     QPixmap plusPix(":/zoom_in.svg");
     QPixmap clearPix(":/017-trash.svg");
     QPixmap splitPix(":/013-layers.svg");
-    QPixmap snakePix(":/026-gamepad.svg");
 
     auto newFile = ui->toolbar->addAction(QIcon(newPix),"New file");
     auto openFile = ui->toolbar->addAction(QIcon(openPix),"Open file");
@@ -34,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     auto zoomIn = ui->toolbar->addAction(QIcon(plusPix),"Zoom in");
     auto zoomOut = ui->toolbar->addAction(QIcon(minusPix),"Zoom out");
     auto split = ui->toolbar->addAction(QIcon(splitPix),"Split display");
-    auto snakeGame = ui->toolbar->addAction(QIcon(snakePix),"Snake");
 
     ui->toolbar->addSeparator();
 
@@ -50,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     connect(split,&QAction::triggered, this, &MainWindow::splitDisplay);
 
-    connect(snakeGame,&QAction::triggered,this,&MainWindow::playSnake);
 
     QResource *images_rc = new QResource("images.qrc");
     images_rc->data();
@@ -155,12 +152,6 @@ void MainWindow::splitDisplay()
     else
         second_edit->deleteLater();
 
-}
-
-void MainWindow::playSnake()
-{
-    Snake *s = new Snake(this);
-    s->show();
 }
 
 void MainWindow::clear()

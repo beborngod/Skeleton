@@ -27,6 +27,13 @@ class MainWindow : public QMainWindow
     QTextEdit *edit;
     QTextEdit *second_edit;
     QTextEdit *focus_edit;
+
+    QAction * newFileAction();
+    QAction * openFileAction();
+    QAction * saveFileAction();
+    QAction * zoomInAction();
+    QAction * zoomOutAction();
+    QAction * splitAction();
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -37,6 +44,5 @@ protected slots:
     void zoomTextIn();
     void zoomTextOut();
     void splitDisplay();
-    void playSnake();
     void clear();
 };

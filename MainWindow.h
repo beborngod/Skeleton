@@ -1,19 +1,6 @@
 #pragma once
 
-#include <QMainWindow>
-#include <QApplication>
-#include <QTextEdit>
-#include <QFile>
-#include <QToolBar>
-#include <QIcon>
-#include <QAction>
-#include <QStatusBar>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QStackedWidget>
+#include <QtWidgets>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,12 +15,22 @@ class MainWindow : public QMainWindow
     QTextEdit *second_edit;
     QTextEdit *focus_edit;
 
-    QAction * newFileAction();
-    QAction * openFileAction();
-    QAction * saveFileAction();
-    QAction * zoomInAction();
-    QAction * zoomOutAction();
-    QAction * splitAction();
+    QStackedWidget *stacked_windows;
+
+    QAction *newFileAction;
+    QAction *openFileAction;
+    QAction *saveFileAction;
+    QAction *zoomInAction;
+    QAction *zoomOutAction;
+    QAction *splitAction;
+    QAction *settingsAction;
+    QAction *clearDisplayAction;
+
+    QGroupBox *edit_color_gb;
+    QRadioButton *black_rb;
+    QRadioButton *white_rb;
+    QRadioButton *default_rb;
+    QRadioButton *spy_bot_rb;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -45,4 +42,6 @@ protected slots:
     void zoomTextOut();
     void splitDisplay();
     void clear();
+    void settings();
+    void themeChanging();
 };

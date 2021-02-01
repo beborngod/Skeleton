@@ -19,35 +19,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QToolBar {
-	
-	
-	background-color: rgb(65, 65, 65);
-}
-QTextEdit {
-	background-color: rgb(88, 88, 88);	
-	color: rgb(255, 255, 255);
-}</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="edit">
-    <property name="geometry">
-     <rect>
-      <x>25</x>
-      <y>11</y>
-      <width>491</width>
-      <height>371</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QTextEdit {
-	
-	background-color: rgb(88, 88, 88);
-}</string>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QToolBar" name="toolbar">
    <property name="minimumSize">
     <size>

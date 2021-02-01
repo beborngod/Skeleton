@@ -1,0 +1,17 @@
+QTextEdit {
+    background-color: rgb(255, 255, 255);	
+    color: rgb(0, 0, 0);
+}
+
+QToolBar {
+    background-color: rgb(255, 255, 255);
+}
+
+QGroupBox{
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+QRadioButton{
+    color: rgb(0, 0, 0);
+}

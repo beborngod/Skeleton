@@ -10,14 +10,10 @@ int main(int argc, char *argv[])
     window.resize(1000,700);
     window.setWindowIcon(QIcon(":/human-skull.svg"));
 
+/* Hide debug info in release */
 #ifndef QT_DEBUG
     qinstallMessageHandler(dummyOutput);
 #endif
-
-    /*QFile styleSheetFile("NAME_OF.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(styleSheetFile.readAll());
-    app.setStyleSheet(styleSheet);*/
 
     window.show();
     return app.exec();

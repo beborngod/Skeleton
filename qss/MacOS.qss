@@ -196,7 +196,7 @@ QComboBox, QFontComboBox {
     padding-left: 5px;
 }
 QComboBox:editable, QComboBox:!editable, QComboBox::drop-down:editable, QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-    background: #ffff;
+    background: #ffffff;
 }
 QComboBox::drop-down {
     subcontrol-origin: padding;
@@ -425,16 +425,4 @@ QScrollBar::add-line:vertical:pressed, QScrollBar::add-line:horizontal:pressed, 
 }
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal, QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
-}
-QScrollBar::up-arrow:vertical {
-    image: url(/usr/share/icons/Adwaita/16x16/actions/go-up-symbolic.symbolic.png);
-}
-QScrollBar::down-arrow:vertical {
-    image: url(/usr/share/icons/Adwaita/16x16/actions/go-down-symbolic.symbolic.png);
-}
-QScrollBar::left-arrow:horizontal {
-    image: url(/usr/share/icons/Adwaita/16x16/actions/go-previous-symbolic.symbolic.png);
-}
-QScrollBar::right-arrow:horizontal {
-    image: url(/usr/share/icons/Adwaita/16x16/actions/go-next-symbolic.symbolic.png);
 }

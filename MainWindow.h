@@ -1,5 +1,3 @@
-#pragma once
-
 #include <QtWidgets>
 
 QT_BEGIN_NAMESPACE
@@ -17,6 +15,24 @@ class MainWindow : public QMainWindow
 
     QStackedWidget *stacked_windows;
 
+    QPixmap newPixBlack;
+    QPixmap openPixBlack;
+    QPixmap savePixBlack;
+    QPixmap minusPixBlack;
+    QPixmap plusPixBlack;
+    QPixmap clearPixBlack;
+    QPixmap splitPixBlack;
+    QPixmap settingsPixBlack;
+
+    QPixmap newPixWhite;
+    QPixmap openPixWhite;
+    QPixmap savePixWhite;
+    QPixmap minusPixWhite;
+    QPixmap plusPixWhite;
+    QPixmap clearPixWhite;
+    QPixmap splitPixWhite;
+    QPixmap settingsPixWhite;
+
     QAction *newFileAction;
     QAction *openFileAction;
     QAction *saveFileAction;
@@ -26,14 +42,17 @@ class MainWindow : public QMainWindow
     QAction *settingsAction;
     QAction *clearDisplayAction;
 
-    QGroupBox *edit_color_gb;
-    QRadioButton *black_rb;
-    QRadioButton *white_rb;
-    QRadioButton *default_rb;
-    QRadioButton *spy_bot_rb;
+    QGroupBox *themesGroupBox;
+    QRadioButton *blackThemeButton;
+    QRadioButton *whiteThemeButton;
+    QRadioButton *defaultThemeButton;
+    QRadioButton *spybotThemeButton;
+    QRadioButton *obitThemeButton;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void iconChangeToBlack();
+    void iconChangeToWhite();
 protected slots:
     void newFile();
     void openFile();

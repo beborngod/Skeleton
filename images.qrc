@@ -1,14 +1,22 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/"><!-- black icons -->
         <file alias="zoom_out.svg">images/zoom_out.svg</file>
         <file alias="zoom_in.svg">images/zoom_in.svg</file>
         <file alias="human-skull.svg">images/human-skull.svg</file>
         <file alias="file.svg">images/file.svg</file>
         <file alias="045-file.svg">images/045-file.svg</file>
-        <file alias="026-gamepad.svg">images/026-gamepad.svg</file>
         <file alias="017-trash.svg">images/017-trash.svg</file>
         <file alias="013-layers.svg">images/013-layers.svg</file>
         <file alias="012-edit.svg">images/012-edit.svg</file>
         <file alias="050-settings.svg">images/050-settings.svg</file>
+                        <!-- white icons -->
+        <file alias="zoom_out_white.png">images/zoom_out_white.png</file>
+        <file alias="zoom_in_white.png">images/zoom_in_white.png</file>
+        <file alias="file_white.png">images/file_white.png</file>
+        <file alias="045-file_white.png">images/045-file_white.png</file>
+        <file alias="017-trash_white.png">images/017-trash_white.png</file>
+        <file alias="013-layers_white.png">images/013-layers_white.png</file>
+        <file alias="012-edit_white.png">images/012-edit_white.png</file>
+        <file alias="050-settings_white.png">images/050-settings_white.png</file>
     </qresource>
 </RCC>

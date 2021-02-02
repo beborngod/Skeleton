@@ -13,7 +13,7 @@ SOURCES += \
     MainWindow.cxx
 
 HEADERS += \
-    MainWindow.h \
+    MainWindow.h
 
 FORMS += \
     MainWindow.ui

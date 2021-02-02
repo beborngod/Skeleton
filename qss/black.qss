@@ -1,8 +1,8 @@
 QToolBar {
-    background-color: rgb(29, 24, 24);
+    background-color: rgb(27, 26, 26);
 }
 QTextEdit {
-    background-color: rgb(0, 0, 0);	
+    background-color: rgb(27, 26, 26);
     color: rgb(255, 255, 255);
 }
 QGroupBox{

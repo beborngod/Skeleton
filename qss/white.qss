@@ -3,7 +3,7 @@ QTextEdit {
     color: rgb(0, 0, 0);
 }
 
-QToolBar {
+QToolBar, QLabel {
     background-color: rgb(255, 255, 255);
 }
 
@@ -14,4 +14,20 @@ QGroupBox{
 
 QRadioButton{
     color: rgb(0, 0, 0);
+}
+
+QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
 }

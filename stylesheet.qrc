@@ -5,5 +5,7 @@
         <file alias="black.qss">qss/black.qss</file>
         <file alias="default.qss">qss/default.qss</file>
         <file alias="Obit.qss">qss/Obit.qss</file>
+        <file alias="Aqua.qss">qss/Aqua.qss</file>
+        <file alias="MacOS.qss">qss/MacOS.qss</file>
     </qresource>
 </RCC>

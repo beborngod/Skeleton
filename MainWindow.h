@@ -50,6 +50,8 @@ class MainWindow : public QMainWindow
     QRadioButton *defaultThemeButton;
     QRadioButton *spybotThemeButton;
     QRadioButton *obitThemeButton;
+    QRadioButton *aquaThemeButton;
+    QRadioButton *macosThemeButton;
 
     std::map<QString,QString>themes;
 public:

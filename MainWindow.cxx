@@ -11,10 +11,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     splitter = new QSplitter(Qt::Horizontal, this);
 
     mainEdit = new QTextEdit(this);
+    secondEdit = new QTextEdit(this);
 
     splitter->addWidget(mainEdit);
-
-    secondEdit = new QTextEdit();
     splitter->addWidget(secondEdit);
     secondEdit->hide();
 
@@ -60,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     whiteThemeButton = new QRadioButton("White", this);
     spybotThemeButton = new QRadioButton("SpyBot", this);
     obitThemeButton = new QRadioButton("Obit", this);
+    aquaThemeButton = new QRadioButton("Aqua", this);
+    macosThemeButton = new QRadioButton("MacOS", this);
     defaultThemeButton->setChecked(true);
 
     auto labelBetaTheme = new QLabel(this);
@@ -72,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     vboxLayoutThemes->addWidget(labelBetaTheme);
     vboxLayoutThemes->addWidget(spybotThemeButton);
     vboxLayoutThemes->addWidget(obitThemeButton);
+    vboxLayoutThemes->addWidget(aquaThemeButton);
+    vboxLayoutThemes->addWidget(macosThemeButton);
 
     vboxLayoutThemes->addSpacing(10);
     vboxLayoutThemes->addStretch(1);
@@ -85,6 +88,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(blackThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(spybotThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(obitThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(aquaThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(macosThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+
 
     /* ----------setting Default theme----------- */
     auto it = themes.find("default");
@@ -281,6 +287,18 @@ void MainWindow::themeChanging()
         setStyleSheet(it->second);
         iconChangeToWhite();
     }
+    else if (aquaThemeButton->isChecked())
+    {
+        auto it = themes.find("aqua");
+        setStyleSheet(it->second);
+        iconChangeToBlack();
+    }
+    else if (macosThemeButton->isChecked())
+    {
+        auto it = themes.find("macos");
+        setStyleSheet(it->second);
+        iconChangeToBlack();
+    }
 }
 
 void MainWindow::iconChangeToBlack()
@@ -315,9 +333,13 @@ void MainWindow::loadThemes()
         ":/black.qss",
         ":/white.qss",
         ":/SpyBot.qss",
-        ":/Obit.qss"};
+        ":/Obit.qss",
+        ":/Aqua.qss",
+        ":/MacOS.qss"
+    };
 
-    std::vector<QString> themeNames = {"default","black","white","spybot","obit"};
+    std::vector<QString> themeNames = {
+        "default","black","white","spybot","obit","aqua","macos"};
 
     for (size_t var = 0; var < styleSheetFilenames.size(); var++)
     {

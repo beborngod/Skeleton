@@ -24,12 +24,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 QWidget
 {
 	background-color: #232430;
-	color: #000000;
-	border-color: #000000;
+	/* color: #000000;
+	border-color: #000000; */
 
 }
-
-
+QToolBar{
+	background-color: #ff9c2b;
+}
+QGroupBox{
+	color: rgb(255, 255, 255);
+}
+QTextEdit{
+	color: rgb(255, 255, 255);
+}
+QRadionButton{
+	color: rgb(255, 255, 255);
+}
 /*-----QLabel-----*/
 QLabel
 {

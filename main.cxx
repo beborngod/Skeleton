@@ -8,7 +8,8 @@ int main(int argc, char *argv[])
     MainWindow window;
     window.setWindowTitle("Skeleton");
     window.resize(1000,700);
-    window.setWindowIcon(QIcon(":/human-skull.svg"));
+    window.setWindowIcon(QIcon(":/main_icon.svg"));
+
 
 /* Hide debug info in release */
 #ifndef QT_DEBUG

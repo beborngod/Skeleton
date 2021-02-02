@@ -14,32 +14,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     splitter->addWidget(edit);
 
-    stacked_windows = new QStackedWidget(this);
+    stackedWindows = new QStackedWidget(this);
 
-    stacked_windows->addWidget(splitter);
-    stacked_windows->setCurrentIndex(0);
+    stackedWindows->addWidget(splitter);
+    stackedWindows->setCurrentIndex(0);
 
-    setCentralWidget(stacked_windows);
+    setCentralWidget(stackedWindows);
 
-    /* -------load black icons for light themes in Tool bar------ */
-    newPixBlack.load(":/file.svg");
-    openPixBlack.load(":/045-file.svg");
-    savePixBlack.load(":/012-edit.svg");
-    minusPixBlack.load(":/zoom_out.svg");
-    plusPixBlack.load(":/zoom_in.svg");
-    clearPixBlack.load(":/017-trash.svg");
-    splitPixBlack.load(":/013-layers.svg");
-    settingsPixBlack.load(":/050-settings.svg");
-
-    /* -------load White icons for darker themes in Tool bar------ */
-    newPixWhite.load(":/file_white.png");
-    openPixWhite.load(":/045-file_white.png");
-    savePixWhite.load(":/012-edit_white.png");
-    minusPixWhite.load(":/zoom_out_white.png");
-    plusPixWhite.load(":/zoom_in_white.png");
-    clearPixWhite.load(":/017-trash_white.png");
-    splitPixWhite.load(":/013-layers_white.png");
-    settingsPixWhite.load(":/050-settings_white.png");
+    /* --Load Icons and Themes */
+    loadIcons();
+    loadThemes();
 
     /* -------setting Action for Tool bar----------- */
     newFileAction = ui->toolbar->addAction(QIcon(newPixBlack), "New file");
@@ -74,10 +58,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     obitThemeButton = new QRadioButton("Obit", this);
     defaultThemeButton->setChecked(true);
 
+    auto labelBetaTheme = new QLabel(this);
+    labelBetaTheme->setText("Beta:");
+
     auto vboxLayoutThemes = new QVBoxLayout();
     vboxLayoutThemes->addWidget(defaultThemeButton);
     vboxLayoutThemes->addWidget(blackThemeButton);
     vboxLayoutThemes->addWidget(whiteThemeButton);
+    vboxLayoutThemes->addWidget(labelBetaTheme);
     vboxLayoutThemes->addWidget(spybotThemeButton);
     vboxLayoutThemes->addWidget(obitThemeButton);
 
@@ -85,21 +73,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     vboxLayoutThemes->addStretch(1);
 
     themesGroupBox->setLayout(vboxLayoutThemes);
-    stacked_windows->addWidget(themesGroupBox);
+    stackedWindows->addWidget(themesGroupBox);
 
     /* ----------connection theme changing in settingd----------- */
-    connect(defaultThemeButton,&QRadioButton::clicked,this,&MainWindow::themeChanging);
-    connect(whiteThemeButton,&QRadioButton::clicked,this,&MainWindow::themeChanging);
-    connect(blackThemeButton,&QRadioButton::clicked,this,&MainWindow::themeChanging);
-    connect(spybotThemeButton,&QRadioButton::clicked,this,&MainWindow::themeChanging);
-    connect(obitThemeButton,&QRadioButton::clicked,this,&MainWindow::themeChanging);
-
+    connect(defaultThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(whiteThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(blackThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(spybotThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+    connect(obitThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
 
     /* ----------setting Default theme----------- */
-    QFile styleSheetFile(":/default.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    QString styleSheetDefault = QLatin1String(styleSheetFile.readAll());
-    setStyleSheet(styleSheetDefault);
+    auto it = themes.find("default");
+    setStyleSheet(it->second);
 }
 
 MainWindow::~MainWindow()
@@ -109,7 +94,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::newFile()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         focus_edit->clear();
@@ -135,7 +121,8 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getOpenFileName();
@@ -156,7 +143,8 @@ void MainWindow::openFile()
 
 void MainWindow::saveFile()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getSaveFileName();
@@ -174,7 +162,8 @@ void MainWindow::saveFile()
 
 void MainWindow::zoomTextIn()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         if (focus_edit == edit)
@@ -192,7 +181,8 @@ void MainWindow::zoomTextIn()
 
 void MainWindow::zoomTextOut()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         if (focus_edit == edit)
@@ -216,7 +206,8 @@ void MainWindow::zoomTextOut()
 
 void MainWindow::splitDisplay()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         if (splitter->count() == 1)
         {
             second_edit = new QTextEdit();
@@ -229,7 +220,8 @@ void MainWindow::splitDisplay()
 
 void MainWindow::clear()
 {
-    if(stacked_windows->currentIndex() == 0){
+    if (stackedWindows->currentIndex() == 0)
+    {
         focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QMessageBox::StandardButton reply = QMessageBox::question(
@@ -244,10 +236,13 @@ void MainWindow::clear()
 
 void MainWindow::settings()
 {
-    if (stacked_windows->currentIndex() == 0){
-        stacked_windows->setCurrentIndex(1);
-    }else{
-        stacked_windows->setCurrentIndex(0);
+    if (stackedWindows->currentIndex() == 0)
+    {
+        stackedWindows->setCurrentIndex(1);
+    }
+    else
+    {
+        stackedWindows->setCurrentIndex(0);
     }
 }
 
@@ -255,50 +250,34 @@ void MainWindow::themeChanging()
 {
     if (defaultThemeButton->isChecked())
     {
-        QFile styleSheetFile(":/default.qss");
-        styleSheetFile.open(QFile::ReadOnly);
-        QString styleSheetDefault = QLatin1String(styleSheetFile.readAll());
-        setStyleSheet(styleSheetDefault);
-
+        auto it = themes.find("default");
+        setStyleSheet(it->second);
         iconChangeToBlack();
     }
     else if (blackThemeButton->isChecked())
     {
-        QFile styleSheetFile(":/black.qss");
-        styleSheetFile.open(QFile::ReadOnly);
-        QString styleSheetBlack = QLatin1String(styleSheetFile.readAll());
-        setStyleSheet(styleSheetBlack);
-
+        auto it = themes.find("black");
+        setStyleSheet(it->second);
         iconChangeToWhite();
     }
     else if (whiteThemeButton->isChecked())
     {
-        QFile styleSheetFile(":/white.qss");
-        styleSheetFile.open(QFile::ReadOnly);
-        QString styleSheetWhite = QLatin1String(styleSheetFile.readAll());
-        setStyleSheet(styleSheetWhite);
-
+        auto it = themes.find("white");
+        setStyleSheet(it->second);
         iconChangeToBlack();
     }
     else if (spybotThemeButton->isChecked())
     {
-        QFile styleSheetFile(":/SpyBot.qss");
-        styleSheetFile.open(QFile::ReadOnly);
-        QString styleSheetSpybot = QLatin1String(styleSheetFile.readAll());
-        setStyleSheet(styleSheetSpybot);
-
+        auto it = themes.find("spybot");
+        setStyleSheet(it->second);
         iconChangeToWhite();
     }
     else if (obitThemeButton->isChecked())
     {
-        QFile styleSheetFile(":/Obit.qss");
-        styleSheetFile.open(QFile::ReadOnly);
-        QString styleSheetSpybot = QLatin1String(styleSheetFile.readAll());
-        setStyleSheet(styleSheetSpybot);
-
+        auto it = themes.find("obit");
+        setStyleSheet(it->second);
         iconChangeToWhite();
     }
-    
 }
 
 void MainWindow::iconChangeToBlack()
@@ -323,4 +302,77 @@ void MainWindow::iconChangeToWhite()
     splitAction->setIcon(splitPixWhite);
     clearDisplayAction->setIcon(clearPixWhite);
     settingsAction->setIcon(settingsPixWhite);
+}
+
+/* void MainWindow::loadThemes()
+{
+    QFile styleSheetFile(":/default.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    styleSheetDefault = QLatin1String(styleSheetFile.readAll());
+    styleSheetFile.close();
+
+    styleSheetFile.setFileName(":/black.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    styleSheetBlack = QLatin1String(styleSheetFile.readAll());
+    styleSheetFile.close();
+
+    styleSheetFile.setFileName(":/white.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    styleSheetWhite = QLatin1String(styleSheetFile.readAll());
+    styleSheetFile.close();
+
+    styleSheetFile.setFileName(":/SpyBot.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    styleSheetSpybot = QLatin1String(styleSheetFile.readAll());
+    styleSheetFile.close();
+
+    styleSheetFile.setFileName(":/Obit.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    styleSheetObit = QLatin1String(styleSheetFile.readAll());
+    styleSheetFile.close();
+} */
+
+void MainWindow::loadThemes()
+{
+    QFile styleSheetFile;
+    std::vector<QString> styleSheetFilenames = {
+        ":/default.qss",
+        ":/black.qss",
+        ":/white.qss",
+        ":/SpyBot.qss",
+        ":/Obit.qss"};
+
+    std::vector<QString> themeNames = {"default","black","white","spybot","obit"};
+
+    for (size_t var = 0; var < styleSheetFilenames.size(); var++)
+    {
+        styleSheetFile.setFileName(styleSheetFilenames[var]);
+        styleSheetFile.open(QFile::ReadOnly);
+        themes.emplace(themeNames[var],QLatin1String(styleSheetFile.readAll()));
+        styleSheetFile.close();
+    }
+    
+}
+
+void MainWindow::loadIcons()
+{
+    /* -------load black icons for light themes in Tool bar------ */
+    newPixBlack.load(":/file.svg");
+    openPixBlack.load(":/045-file.svg");
+    savePixBlack.load(":/012-edit.svg");
+    minusPixBlack.load(":/zoom_out.svg");
+    plusPixBlack.load(":/zoom_in.svg");
+    clearPixBlack.load(":/017-trash.svg");
+    splitPixBlack.load(":/013-layers.svg");
+    settingsPixBlack.load(":/050-settings.svg");
+
+    /* -------load White icons for darker themes in Tool bar------ */
+    newPixWhite.load(":/file_white.png");
+    openPixWhite.load(":/045-file_white.png");
+    savePixWhite.load(":/012-edit_white.png");
+    minusPixWhite.load(":/zoom_out_white.png");
+    plusPixWhite.load(":/zoom_in_white.png");
+    clearPixWhite.load(":/017-trash_white.png");
+    splitPixWhite.load(":/013-layers_white.png");
+    settingsPixWhite.load(":/050-settings_white.png");
 }

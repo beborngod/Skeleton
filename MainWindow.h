@@ -1,7 +1,9 @@
 #include <QtWidgets>
+#include <vector>
+#include <map>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui{class MainWindow;}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -13,7 +15,7 @@ class MainWindow : public QMainWindow
     QTextEdit *second_edit;
     QTextEdit *focus_edit;
 
-    QStackedWidget *stacked_windows;
+    QStackedWidget *stackedWindows;
 
     QPixmap newPixBlack;
     QPixmap openPixBlack;
@@ -48,11 +50,18 @@ class MainWindow : public QMainWindow
     QRadioButton *defaultThemeButton;
     QRadioButton *spybotThemeButton;
     QRadioButton *obitThemeButton;
+
+    QString styleSheetDefault;
+    QString styleSheetBlack;
+    QString styleSheetWhite;
+    QString styleSheetSpybot;
+    QString styleSheetObit;
+
+    std::map<QString,QString>themes;
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void iconChangeToBlack();
-    void iconChangeToWhite();
 protected slots:
     void newFile();
     void openFile();
@@ -63,4 +72,10 @@ protected slots:
     void clear();
     void settings();
     void themeChanging();
+
+private:
+    void iconChangeToBlack();
+    void iconChangeToWhite();
+    void loadThemes();
+    void loadIcons();
 };

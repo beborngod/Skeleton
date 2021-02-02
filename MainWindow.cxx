@@ -10,9 +10,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     splitter = new QSplitter(Qt::Horizontal, this);
 
-    edit = new QTextEdit(this);
+    mainEdit = new QTextEdit(this);
 
-    splitter->addWidget(edit);
+    splitter->addWidget(mainEdit);
+
+    secondEdit = new QTextEdit();
+    splitter->addWidget(secondEdit);
+    secondEdit->hide();
 
     stackedWindows = new QStackedWidget(this);
 
@@ -96,9 +100,9 @@ void MainWindow::newFile()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        focus_edit->clear();
+        focusEdit->clear();
 
         QMessageBox::StandardButton reply = QMessageBox::question(
             this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
@@ -112,7 +116,7 @@ void MainWindow::newFile()
             {
                 QFile file(s_text);
                 file.open(QIODevice::WriteOnly);
-                file.write(focus_edit->toPlainText().toUtf8());
+                file.write(focusEdit->toPlainText().toUtf8());
                 file.close();
             }
         }
@@ -123,7 +127,7 @@ void MainWindow::openFile()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getOpenFileName();
         QString s_text = c_text.simplified();
@@ -133,8 +137,8 @@ void MainWindow::openFile()
             QFile file(s_text);
             if (file.open(QIODevice::ReadOnly))
             {
-                focus_edit->clear();
-                focus_edit->append(QString(file.readAll()));
+                focusEdit->clear();
+                focusEdit->append(QString(file.readAll()));
             }
             file.close();
         }
@@ -145,7 +149,7 @@ void MainWindow::saveFile()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
@@ -154,7 +158,7 @@ void MainWindow::saveFile()
         {
             QFile file(s_text);
             file.open(QIODevice::WriteOnly);
-            file.write(focus_edit->toPlainText().toUtf8());
+            file.write(focusEdit->toPlainText().toUtf8());
             file.close();
         }
     }
@@ -164,16 +168,16 @@ void MainWindow::zoomTextIn()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if (focus_edit == edit)
+        if (focusEdit == mainEdit)
         {
-            edit->zoomIn();
+            mainEdit->zoomIn();
             ++zoom_first_window;
         }
-        else if (focus_edit == second_edit)
+        else if (focusEdit == secondEdit)
         {
-            second_edit->zoomIn();
+            secondEdit->zoomIn();
             ++zoom_second_window;
         }
     }
@@ -183,21 +187,21 @@ void MainWindow::zoomTextOut()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if (focus_edit == edit)
+        if (focusEdit == mainEdit)
         {
             if (zoom_first_window >= 0)
             {
-                edit->zoomOut();
+                mainEdit->zoomOut();
                 --zoom_first_window;
             }
         }
-        else if (focus_edit == second_edit)
+        else if (focusEdit == secondEdit)
         {
             if (zoom_second_window >= 0)
             {
-                second_edit->zoomOut();
+                secondEdit->zoomOut();
                 --zoom_second_window;
             }
         }
@@ -208,13 +212,12 @@ void MainWindow::splitDisplay()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        if (splitter->count() == 1)
+        if (secondEdit->isHidden())
         {
-            second_edit = new QTextEdit();
-            splitter->addWidget(second_edit);
+            secondEdit->show();
         }
         else
-            second_edit->deleteLater();
+            secondEdit->hide();
     }
 }
 
@@ -222,14 +225,14 @@ void MainWindow::clear()
 {
     if (stackedWindows->currentIndex() == 0)
     {
-        focus_edit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QMessageBox::StandardButton reply = QMessageBox::question(
             this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes)
         {
-            focus_edit->clear();
+            focusEdit->clear();
         }
     }
 }

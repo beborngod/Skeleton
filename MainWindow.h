@@ -11,9 +11,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     Ui::MainWindow *ui;
     QSplitter *splitter;
-    QTextEdit *edit;
-    QTextEdit *second_edit;
-    QTextEdit *focus_edit;
+    QTextEdit *mainEdit;
+    QTextEdit *secondEdit;
+    QTextEdit *focusEdit;
 
     QStackedWidget *stackedWindows;
 
@@ -51,14 +51,7 @@ class MainWindow : public QMainWindow
     QRadioButton *spybotThemeButton;
     QRadioButton *obitThemeButton;
 
-    QString styleSheetDefault;
-    QString styleSheetBlack;
-    QString styleSheetWhite;
-    QString styleSheetSpybot;
-    QString styleSheetObit;
-
     std::map<QString,QString>themes;
-
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -72,7 +65,6 @@ protected slots:
     void clear();
     void settings();
     void themeChanging();
-
 private:
     void iconChangeToBlack();
     void iconChangeToWhite();

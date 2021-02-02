@@ -304,34 +304,6 @@ void MainWindow::iconChangeToWhite()
     settingsAction->setIcon(settingsPixWhite);
 }
 
-/* void MainWindow::loadThemes()
-{
-    QFile styleSheetFile(":/default.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    styleSheetDefault = QLatin1String(styleSheetFile.readAll());
-    styleSheetFile.close();
-
-    styleSheetFile.setFileName(":/black.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    styleSheetBlack = QLatin1String(styleSheetFile.readAll());
-    styleSheetFile.close();
-
-    styleSheetFile.setFileName(":/white.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    styleSheetWhite = QLatin1String(styleSheetFile.readAll());
-    styleSheetFile.close();
-
-    styleSheetFile.setFileName(":/SpyBot.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    styleSheetSpybot = QLatin1String(styleSheetFile.readAll());
-    styleSheetFile.close();
-
-    styleSheetFile.setFileName(":/Obit.qss");
-    styleSheetFile.open(QFile::ReadOnly);
-    styleSheetObit = QLatin1String(styleSheetFile.readAll());
-    styleSheetFile.close();
-} */
-
 void MainWindow::loadThemes()
 {
     QFile styleSheetFile;

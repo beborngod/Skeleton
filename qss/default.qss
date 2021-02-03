@@ -1,3 +1,6 @@
+*{
+    font: regular "Source Code Pro";
+}
 QToolBar {
     /* background-color: rgb(65, 65, 65); */
     background-color : transparent;

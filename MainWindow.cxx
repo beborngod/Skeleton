@@ -5,6 +5,7 @@ static int zoom_second_window = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    /* QFont editFont("Source Code Pro"); */
     /* ---------Creating toolbar--------- */
     toolbar = new QToolBar(this);
     toolbar->setOrientation(Qt::Horizontal);
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     splitter = new QSplitter(Qt::Horizontal, this);
     mainEdit = new QTextEdit(this);
+    /* mainEdit->setFont(editFont); */
     secondEdit = new QTextEdit(this);
 
     splitter->addWidget(mainEdit);

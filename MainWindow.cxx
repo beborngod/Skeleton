@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     toolbar->setOrientation(Qt::Horizontal);
     toolbar->setMovable(false);
     toolbar->setFixedWidth(45);
-    addToolBar(Qt::LeftToolBarArea,toolbar);
+    addToolBar(Qt::LeftToolBarArea, toolbar);
 
     splitter = new QSplitter(Qt::Horizontal, this);
     mainEdit = new QTextEdit(this);
@@ -30,19 +30,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     loadThemes();
 
     /* -------setting Action for Tool bar----------- */
-    newFileAction = toolbar->addAction(QIcon(newPixBlack), "New file");
-    openFileAction = toolbar->addAction(QIcon(openPixBlack), "Open file");
-    saveFileAction = toolbar->addAction(QIcon(savePixBlack), "Save file");
-    zoomInAction = toolbar->addAction(QIcon(plusPixBlack), "Zoom in");
-    zoomOutAction = toolbar->addAction(QIcon(minusPixBlack), "Zoom out");
-    splitAction = toolbar->addAction(QIcon(splitPixBlack), "Split display");
-    undoAction = toolbar->addAction(QIcon(undoPixBlack), "Undo");
-    redoAction = toolbar->addAction(QIcon(redoPixBlack), "Redo");
-    clearDisplayAction = toolbar->addAction(QIcon(clearPixBlack), "Clear");
+    newFileAction = toolbar->addAction(QIcon(newPixWhite), "New file");
+    openFileAction = toolbar->addAction(QIcon(openPixWhite), "Open file");
+    saveFileAction = toolbar->addAction(QIcon(savePixWhite), "Save file");
+    zoomInAction = toolbar->addAction(QIcon(plusPixWhite), "Zoom in");
+    zoomOutAction = toolbar->addAction(QIcon(minusPixWhite), "Zoom out");
+    splitAction = toolbar->addAction(QIcon(splitPixWhite), "Split display");
+    undoAction = toolbar->addAction(QIcon(undoPixWhite), "Undo");
+    redoAction = toolbar->addAction(QIcon(redoPixWhite), "Redo");
+    clearDisplayAction = toolbar->addAction(QIcon(clearPixWhite), "Clear");
 
-    toolbar->addSeparator();
+    QWidget *emptyPlaceForToolBar = new QWidget();
+    emptyPlaceForToolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolbar->addWidget(emptyPlaceForToolBar);
 
-    settingsAction = toolbar->addAction(QIcon(settingsPixBlack), "Settings");
+    settingsAction = toolbar->addAction(QIcon(settingsPixWhite), "Settings");
 
     /* --------Tool bar Sognal-Slot connection------------*/
     connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
@@ -96,16 +98,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(aquaThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(macosThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
 
+    /* --------Shortcuts-------- */
+    QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
+    connect(settingShortcut, &QShortcut::activated,this,&MainWindow::settings);
 
-    /* ----------setting Default theme----------- */
-    auto it = themes.find("default");
+        /* ----------setting Default theme----------- */
+        auto it = themes.find("default");
     setStyleSheet(it->second);
 
     /* ----------Central widget----------- */
     setCentralWidget(stackedWindows);
 }
 
-MainWindow::~MainWindow(){}
+MainWindow::~MainWindow() {}
 
 void MainWindow::newFile()
 {
@@ -266,7 +271,7 @@ void MainWindow::themeChanging()
     {
         auto it = themes.find("default");
         setStyleSheet(it->second);
-        iconChangeToBlack();
+        iconChangeToWhite();
     }
     else if (blackThemeButton->isChecked())
     {
@@ -356,20 +361,18 @@ void MainWindow::loadThemes()
         ":/SpyBot.qss",
         ":/Obit.qss",
         ":/Aqua.qss",
-        ":/MacOS.qss"
-    };
+        ":/MacOS.qss"};
 
     std::vector<QString> themeNames = {
-        "default","black","white","spybot","obit","aqua","macos"};
+        "default", "black", "white", "spybot", "obit", "aqua", "macos"};
 
     for (size_t var = 0; var < styleSheetFilenames.size(); var++)
     {
         styleSheetFile.setFileName(styleSheetFilenames[var]);
         styleSheetFile.open(QFile::ReadOnly);
-        themes.emplace(themeNames[var],QLatin1String(styleSheetFile.readAll()));
+        themes.emplace(themeNames[var], QLatin1String(styleSheetFile.readAll()));
         styleSheetFile.close();
     }
-    
 }
 
 void MainWindow::loadIcons()

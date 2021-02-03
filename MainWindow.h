@@ -25,6 +25,8 @@ class MainWindow : public QMainWindow
     QPixmap clearPixBlack;
     QPixmap splitPixBlack;
     QPixmap settingsPixBlack;
+    QPixmap undoPixBlack;
+    QPixmap redoPixBlack;
 
     QPixmap newPixWhite;
     QPixmap openPixWhite;
@@ -34,6 +36,8 @@ class MainWindow : public QMainWindow
     QPixmap clearPixWhite;
     QPixmap splitPixWhite;
     QPixmap settingsPixWhite;
+    QPixmap undoPixWhite;
+    QPixmap redoPixWhite;
 
     QAction *newFileAction;
     QAction *openFileAction;
@@ -43,6 +47,8 @@ class MainWindow : public QMainWindow
     QAction *splitAction;
     QAction *settingsAction;
     QAction *clearDisplayAction;
+    QAction *undoAction;
+    QAction *redoAction;
 
     QGroupBox *themesGroupBox;
     QRadioButton *blackThemeButton;
@@ -67,6 +73,8 @@ protected slots:
     void clear();
     void settings();
     void themeChanging();
+    void undoText();
+    void redoText();
 private:
     void iconChangeToBlack();
     void iconChangeToWhite();

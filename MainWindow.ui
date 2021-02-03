@@ -16,6 +16,11 @@
     <height>0</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Source Code Pro</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>

@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     zoomInAction = ui->toolbar->addAction(QIcon(plusPixBlack), "Zoom in");
     zoomOutAction = ui->toolbar->addAction(QIcon(minusPixBlack), "Zoom out");
     splitAction = ui->toolbar->addAction(QIcon(splitPixBlack), "Split display");
+    undoAction = ui->toolbar->addAction(QIcon(undoPixBlack), "Undo");
+    redoAction = ui->toolbar->addAction(QIcon(redoPixBlack), "Redo");
     clearDisplayAction = ui->toolbar->addAction(QIcon(clearPixBlack), "Clear");
 
     ui->toolbar->addSeparator();
@@ -50,8 +52,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
     connect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
     connect(settingsAction, &QAction::triggered, this, &MainWindow::settings);
+    connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
+    connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
 
-    /* ---------themes in settings */
+    /* ---------themes in settings ---------*/
     themesGroupBox = new QGroupBox("   Theme");
 
     defaultThemeButton = new QRadioButton("Default", this);
@@ -301,6 +305,18 @@ void MainWindow::themeChanging()
     }
 }
 
+void MainWindow::undoText()
+{
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+    focusEdit->undo();
+}
+
+void MainWindow::redoText()
+{
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+    focusEdit->redo();
+}
+
 void MainWindow::iconChangeToBlack()
 {
     newFileAction->setIcon(newPixBlack);
@@ -311,6 +327,8 @@ void MainWindow::iconChangeToBlack()
     splitAction->setIcon(splitPixBlack);
     clearDisplayAction->setIcon(clearPixBlack);
     settingsAction->setIcon(settingsPixBlack);
+    undoAction->setIcon(undoPixBlack);
+    redoAction->setIcon(redoPixBlack);
 }
 
 void MainWindow::iconChangeToWhite()
@@ -323,6 +341,8 @@ void MainWindow::iconChangeToWhite()
     splitAction->setIcon(splitPixWhite);
     clearDisplayAction->setIcon(clearPixWhite);
     settingsAction->setIcon(settingsPixWhite);
+    undoAction->setIcon(undoPixWhite);
+    redoAction->setIcon(redoPixWhite);
 }
 
 void MainWindow::loadThemes()
@@ -362,6 +382,8 @@ void MainWindow::loadIcons()
     clearPixBlack.load(":/017-trash.svg");
     splitPixBlack.load(":/013-layers.svg");
     settingsPixBlack.load(":/050-settings.svg");
+    undoPixBlack.load(":/035-return.png");
+    redoPixBlack.load(":/035-return_reversed.png");
 
     /* -------load White icons for darker themes in Tool bar------ */
     newPixWhite.load(":/file_white.png");
@@ -372,4 +394,6 @@ void MainWindow::loadIcons()
     clearPixWhite.load(":/017-trash_white.png");
     splitPixWhite.load(":/013-layers_white.png");
     settingsPixWhite.load(":/050-settings_white.png");
+    undoPixWhite.load(":/035-return_white.png");
+    redoPixWhite.load(":/035-return_reversed_white.png");
 }

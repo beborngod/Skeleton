@@ -6,10 +6,14 @@ static int zoom_second_window = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    toolbar = new QToolBar(this);
+    toolbar->setOrientation(Qt::Horizontal);
+    toolbar->setMovable(false);
+
+    addToolBar(Qt::LeftToolBarArea,toolbar);
+
 
     splitter = new QSplitter(Qt::Horizontal, this);
-
     mainEdit = new QTextEdit(this);
     secondEdit = new QTextEdit(this);
 
@@ -22,26 +26,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     stackedWindows->addWidget(splitter);
     stackedWindows->setCurrentIndex(0);
 
-    setCentralWidget(stackedWindows);
-
     /* --Load Icons and Themes */
     loadIcons();
     loadThemes();
 
     /* -------setting Action for Tool bar----------- */
-    newFileAction = ui->toolbar->addAction(QIcon(newPixBlack), "New file");
-    openFileAction = ui->toolbar->addAction(QIcon(openPixBlack), "Open file");
-    saveFileAction = ui->toolbar->addAction(QIcon(savePixBlack), "Save file");
-    zoomInAction = ui->toolbar->addAction(QIcon(plusPixBlack), "Zoom in");
-    zoomOutAction = ui->toolbar->addAction(QIcon(minusPixBlack), "Zoom out");
-    splitAction = ui->toolbar->addAction(QIcon(splitPixBlack), "Split display");
-    undoAction = ui->toolbar->addAction(QIcon(undoPixBlack), "Undo");
-    redoAction = ui->toolbar->addAction(QIcon(redoPixBlack), "Redo");
-    clearDisplayAction = ui->toolbar->addAction(QIcon(clearPixBlack), "Clear");
+    newFileAction = toolbar->addAction(QIcon(newPixBlack), "New file");
+    openFileAction = toolbar->addAction(QIcon(openPixBlack), "Open file");
+    saveFileAction = toolbar->addAction(QIcon(savePixBlack), "Save file");
+    zoomInAction = toolbar->addAction(QIcon(plusPixBlack), "Zoom in");
+    zoomOutAction = toolbar->addAction(QIcon(minusPixBlack), "Zoom out");
+    splitAction = toolbar->addAction(QIcon(splitPixBlack), "Split display");
+    undoAction = toolbar->addAction(QIcon(undoPixBlack), "Undo");
+    redoAction = toolbar->addAction(QIcon(redoPixBlack), "Redo");
+    clearDisplayAction = toolbar->addAction(QIcon(clearPixBlack), "Clear");
 
-    ui->toolbar->addSeparator();
+    toolbar->addSeparator();
 
-    settingsAction = ui->toolbar->addAction(QIcon(settingsPixBlack), "Settings");
+    settingsAction = toolbar->addAction(QIcon(settingsPixBlack), "Settings");
 
     /* --------Tool bar Sognal-Slot connection------------*/
     connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
@@ -99,6 +101,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     /* ----------setting Default theme----------- */
     auto it = themes.find("default");
     setStyleSheet(it->second);
+
+    /* ----------Central widget----------- */
+    setCentralWidget(stackedWindows);
 }
 
 MainWindow::~MainWindow()

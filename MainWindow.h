@@ -9,6 +9,9 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    QToolBar *toolbar;
+
     Ui::MainWindow *ui;
     QSplitter *splitter;
     QTextEdit *mainEdit;

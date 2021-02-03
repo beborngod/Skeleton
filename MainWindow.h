@@ -2,17 +2,12 @@
 #include <vector>
 #include <map>
 
-QT_BEGIN_NAMESPACE
-namespace Ui{class MainWindow;}
-QT_END_NAMESPACE
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
     QToolBar *toolbar;
 
-    Ui::MainWindow *ui;
     QSplitter *splitter;
     QTextEdit *mainEdit;
     QTextEdit *secondEdit;

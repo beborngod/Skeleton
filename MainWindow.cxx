@@ -1,17 +1,16 @@
 #include "MainWindow.h"
-#include "ui_MainWindow.h"
 
 static int zoom_first_window = 0;
 static int zoom_second_window = 0;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    /* ---------Creating toolbar--------- */
     toolbar = new QToolBar(this);
     toolbar->setOrientation(Qt::Horizontal);
     toolbar->setMovable(false);
-
+    toolbar->setFixedWidth(45);
     addToolBar(Qt::LeftToolBarArea,toolbar);
-
 
     splitter = new QSplitter(Qt::Horizontal, this);
     mainEdit = new QTextEdit(this);
@@ -106,10 +105,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setCentralWidget(stackedWindows);
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow(){}
 
 void MainWindow::newFile()
 {

@@ -2,7 +2,7 @@
 
 Deploying :
 
-	qmake Skeleton.pro
+	cmake
   
   	make
   

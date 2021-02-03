@@ -1,13 +1,15 @@
 QToolBar {
-    background-color: rgb(65, 65, 65);
+    /* background-color: rgb(65, 65, 65); */
+    background-color : transparent;
 }
 QTextEdit {
-    background-color: rgb(88, 88, 88);	
+    /* background-color: rgb(88, 88, 88); */
+    background-color: transparent;	
     color: rgb(255, 255, 255);
 }
 QGroupBox{
-    background-color: rgb(65, 65, 65);
+    background-color: transparent;/* rgb(65, 65, 65); */
 }
 QSplitter{
-    background-color : rgb(88,88,88);
+    background-color : transparent;/* rgb(88,88,88); */
 }

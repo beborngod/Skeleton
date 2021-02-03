@@ -2,7 +2,7 @@
 
 Deploying :
 
-	cmake
+	cmake --build path/to/build --config Release --target all
   
   	make
   

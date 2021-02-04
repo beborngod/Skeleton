@@ -193,14 +193,14 @@ void MainWindow::saveToPdf()
 
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
-        if(not s_text.isEmpty()){
+        if (not s_text.isEmpty())
+        {
             QPrinter printer(QPrinter::HighResolution);
             printer.setOutputFormat(QPrinter::PdfFormat);
             printer.setOutputFileName(QString("%1.pdf").arg(s_text));
 
             focusEdit->document()->print(&printer);
         }
-        
     }
 }
 
@@ -266,13 +266,16 @@ void MainWindow::clear()
     if (stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes)
+        
+        if (not focusEdit->document()->isEmpty())
         {
-            focusEdit->clear();
+            QMessageBox::StandardButton reply = QMessageBox::question(
+                this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
+
+            if (reply == QMessageBox::Yes)
+            {
+                focusEdit->clear();
+            }
         }
     }
 }
@@ -346,7 +349,6 @@ void MainWindow::redoText()
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
     focusEdit->redo();
 }
-
 
 void MainWindow::loadIcons()
 {

@@ -11,6 +11,9 @@ QMainWindow {
 QGroupBox{
     color: #000000;
 }
+QToolButton{
+    height:25px;
+}
 QToolBar{
     background-color: #ececec;
 }

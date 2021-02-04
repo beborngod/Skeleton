@@ -19,7 +19,9 @@ QGroupBox{
 QToolBar{
 	background-color:rgb(65, 65, 65);
 }
-
+QToolButton{
+    height:25px;
+}
 QTextEdit {
 	border-width: 1px;
 	border-style: solid;

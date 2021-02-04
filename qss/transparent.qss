@@ -1,0 +1,21 @@
+ 
+*{
+    font: regular "Source Code Pro";
+}
+QToolBar {
+    /* background-color: rgb(65, 65, 65); */
+    background-color : transparent;
+}
+QTextEdit {
+    background-color: transparent;	
+    color: rgb(255, 255, 255);
+}
+QGroupBox{
+    background-color: transparent;
+}
+QSplitter{
+    background-color : transparent;
+}
+QToolButton{
+    height:25px;
+}

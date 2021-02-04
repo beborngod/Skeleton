@@ -5,17 +5,17 @@ static int zoom_second_window = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    /* QFont editFont("Source Code Pro"); */
+    QSize iconActionSize(20, 20);
     /* ---------Creating toolbar--------- */
     toolbar = new QToolBar(this);
     toolbar->setOrientation(Qt::Horizontal);
     toolbar->setMovable(false);
-    toolbar->setFixedWidth(45);
+    toolbar->setFixedWidth(50);
+    toolbar->setIconSize(iconActionSize);
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
     splitter = new QSplitter(Qt::Horizontal, this);
     mainEdit = new QTextEdit(this);
-    /* mainEdit->setFont(editFont); */
     secondEdit = new QTextEdit(this);
 
     splitter->addWidget(mainEdit);
@@ -32,21 +32,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     loadThemes();
 
     /* -------setting Action for Tool bar----------- */
-    newFileAction = toolbar->addAction(QIcon(newPixWhite), "New file");
-    openFileAction = toolbar->addAction(QIcon(openPixWhite), "Open file");
-    saveFileAction = toolbar->addAction(QIcon(savePixWhite), "Save file");
-    zoomInAction = toolbar->addAction(QIcon(plusPixWhite), "Zoom in");
-    zoomOutAction = toolbar->addAction(QIcon(minusPixWhite), "Zoom out");
-    splitAction = toolbar->addAction(QIcon(splitPixWhite), "Split display");
-    undoAction = toolbar->addAction(QIcon(undoPixWhite), "Undo");
-    redoAction = toolbar->addAction(QIcon(redoPixWhite), "Redo");
-    clearDisplayAction = toolbar->addAction(QIcon(clearPixWhite), "Clear");
+    newFileAction = toolbar->addAction("New file");
+    openFileAction = toolbar->addAction("Open file");
+    saveFileAction = toolbar->addAction("Save file");
+    pdfAction = toolbar->addAction("PDF");
+    zoomInAction = toolbar->addAction("Zoom in");
+    zoomOutAction = toolbar->addAction("Zoom out");
+    splitAction = toolbar->addAction("Split display");
+    undoAction = toolbar->addAction("Undo");
+    redoAction = toolbar->addAction("Redo");
+    clearDisplayAction = toolbar->addAction("Clear");
 
     QWidget *emptyPlaceForToolBar = new QWidget();
     emptyPlaceForToolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolbar->addWidget(emptyPlaceForToolBar);
 
-    settingsAction = toolbar->addAction(QIcon(settingsPixWhite), "Settings");
+    settingsAction = toolbar->addAction("Settings");
 
     /* --------Tool bar Sognal-Slot connection------------*/
     connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
@@ -59,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(settingsAction, &QAction::triggered, this, &MainWindow::settings);
     connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
     connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
+    connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
 
     /* ---------themes in settings ---------*/
     themesGroupBox = new QGroupBox("   Theme");
@@ -102,11 +104,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
-    connect(settingShortcut, &QShortcut::activated,this,&MainWindow::settings);
+    connect(settingShortcut, &QShortcut::activated, this, &MainWindow::settings);
 
-        /* ----------setting Default theme----------- */
-        auto it = themes.find("default");
+    /* ----------setting Default theme----------- */
+    auto it = themes.find("default");
     setStyleSheet(it->second);
+    iconChangeToWhite();
 
     /* ----------Central widget----------- */
     setCentralWidget(stackedWindows);
@@ -179,6 +182,25 @@ void MainWindow::saveFile()
             file.write(focusEdit->toPlainText().toUtf8());
             file.close();
         }
+    }
+}
+
+void MainWindow::saveToPdf()
+{
+    if (stackedWindows->currentIndex() == 0)
+    {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        QString c_text = QFileDialog::getSaveFileName();
+        QString s_text = c_text.simplified();
+        if(not s_text.isEmpty()){
+            QPrinter printer(QPrinter::HighResolution);
+            printer.setOutputFormat(QPrinter::PdfFormat);
+            printer.setOutputFileName(QString("%1.pdf").arg(s_text));
+
+            focusEdit->document()->print(&printer);
+        }
+        
     }
 }
 
@@ -325,32 +347,64 @@ void MainWindow::redoText()
     focusEdit->redo();
 }
 
+
+void MainWindow::loadIcons()
+{
+    /* -------load black icons for light themes in Tool bar------ */
+    newPix.first.load(":/file.svg");
+    openPix.first.load(":/045-file.svg");
+    savePix.first.load(":/012-edit.svg");
+    minusPix.first.load(":/zoom_out.svg");
+    plusPix.first.load(":/zoom_in.svg");
+    clearPix.first.load(":/017-trash.svg");
+    splitPix.first.load(":/013-layers.svg");
+    settingsPix.first.load(":/050-settings.svg");
+    undoPix.first.load(":/035-return.png");
+    redoPix.first.load(":/035-return_reversed.png");
+    pdfPix.first.load(":/document.svg");
+
+    /* -------load White icons for darker themes in Tool bar------ */
+    newPix.second.load(":/file_white.png");
+    openPix.second.load(":/045-file_white.png");
+    savePix.second.load(":/012-edit_white.png");
+    minusPix.second.load(":/zoom_out_white.png");
+    plusPix.second.load(":/zoom_in_white.png");
+    clearPix.second.load(":/017-trash_white.png");
+    splitPix.second.load(":/013-layers_white.png");
+    settingsPix.second.load(":/050-settings_white.png");
+    undoPix.second.load(":/035-return_white.png");
+    redoPix.second.load(":/035-return_reversed_white.png");
+    pdfPix.second.load(":/document_white.png");
+}
+
 void MainWindow::iconChangeToBlack()
 {
-    newFileAction->setIcon(newPixBlack);
-    openFileAction->setIcon(openPixBlack);
-    saveFileAction->setIcon(savePixBlack);
-    zoomInAction->setIcon(plusPixBlack);
-    zoomOutAction->setIcon(minusPixBlack);
-    splitAction->setIcon(splitPixBlack);
-    clearDisplayAction->setIcon(clearPixBlack);
-    settingsAction->setIcon(settingsPixBlack);
-    undoAction->setIcon(undoPixBlack);
-    redoAction->setIcon(redoPixBlack);
+    newFileAction->setIcon(newPix.first);
+    openFileAction->setIcon(openPix.first);
+    saveFileAction->setIcon(savePix.first);
+    zoomInAction->setIcon(plusPix.first);
+    zoomOutAction->setIcon(minusPix.first);
+    splitAction->setIcon(splitPix.first);
+    clearDisplayAction->setIcon(clearPix.first);
+    settingsAction->setIcon(settingsPix.first);
+    undoAction->setIcon(undoPix.first);
+    redoAction->setIcon(redoPix.first);
+    pdfAction->setIcon(pdfPix.first);
 }
 
 void MainWindow::iconChangeToWhite()
 {
-    newFileAction->setIcon(newPixWhite);
-    openFileAction->setIcon(openPixWhite);
-    saveFileAction->setIcon(savePixWhite);
-    zoomInAction->setIcon(plusPixWhite);
-    zoomOutAction->setIcon(minusPixWhite);
-    splitAction->setIcon(splitPixWhite);
-    clearDisplayAction->setIcon(clearPixWhite);
-    settingsAction->setIcon(settingsPixWhite);
-    undoAction->setIcon(undoPixWhite);
-    redoAction->setIcon(redoPixWhite);
+    newFileAction->setIcon(newPix.second);
+    openFileAction->setIcon(openPix.second);
+    saveFileAction->setIcon(savePix.second);
+    zoomInAction->setIcon(plusPix.second);
+    zoomOutAction->setIcon(minusPix.second);
+    splitAction->setIcon(splitPix.second);
+    clearDisplayAction->setIcon(clearPix.second);
+    settingsAction->setIcon(settingsPix.second);
+    undoAction->setIcon(undoPix.second);
+    redoAction->setIcon(redoPix.second);
+    pdfAction->setIcon(pdfPix.second);
 }
 
 void MainWindow::loadThemes()
@@ -375,31 +429,4 @@ void MainWindow::loadThemes()
         themes.emplace(themeNames[var], QLatin1String(styleSheetFile.readAll()));
         styleSheetFile.close();
     }
-}
-
-void MainWindow::loadIcons()
-{
-    /* -------load black icons for light themes in Tool bar------ */
-    newPixBlack.load(":/file.svg");
-    openPixBlack.load(":/045-file.svg");
-    savePixBlack.load(":/012-edit.svg");
-    minusPixBlack.load(":/zoom_out.svg");
-    plusPixBlack.load(":/zoom_in.svg");
-    clearPixBlack.load(":/017-trash.svg");
-    splitPixBlack.load(":/013-layers.svg");
-    settingsPixBlack.load(":/050-settings.svg");
-    undoPixBlack.load(":/035-return.png");
-    redoPixBlack.load(":/035-return_reversed.png");
-
-    /* -------load White icons for darker themes in Tool bar------ */
-    newPixWhite.load(":/file_white.png");
-    openPixWhite.load(":/045-file_white.png");
-    savePixWhite.load(":/012-edit_white.png");
-    minusPixWhite.load(":/zoom_out_white.png");
-    plusPixWhite.load(":/zoom_in_white.png");
-    clearPixWhite.load(":/017-trash_white.png");
-    splitPixWhite.load(":/013-layers_white.png");
-    settingsPixWhite.load(":/050-settings_white.png");
-    undoPixWhite.load(":/035-return_white.png");
-    redoPixWhite.load(":/035-return_reversed_white.png");
 }

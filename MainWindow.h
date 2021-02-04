@@ -1,4 +1,5 @@
 #include <QtWidgets>
+#include <QPrinter>
 #include <vector>
 #include <map>
 
@@ -15,27 +16,17 @@ class MainWindow : public QMainWindow
 
     QStackedWidget *stackedWindows;
 
-    QPixmap newPixBlack;
-    QPixmap openPixBlack;
-    QPixmap savePixBlack;
-    QPixmap minusPixBlack;
-    QPixmap plusPixBlack;
-    QPixmap clearPixBlack;
-    QPixmap splitPixBlack;
-    QPixmap settingsPixBlack;
-    QPixmap undoPixBlack;
-    QPixmap redoPixBlack;
-
-    QPixmap newPixWhite;
-    QPixmap openPixWhite;
-    QPixmap savePixWhite;
-    QPixmap minusPixWhite;
-    QPixmap plusPixWhite;
-    QPixmap clearPixWhite;
-    QPixmap splitPixWhite;
-    QPixmap settingsPixWhite;
-    QPixmap undoPixWhite;
-    QPixmap redoPixWhite;
+    std::pair<QPixmap,QPixmap> newPix;
+    std::pair<QPixmap,QPixmap> openPix;
+    std::pair<QPixmap,QPixmap> savePix;
+    std::pair<QPixmap,QPixmap> minusPix;
+    std::pair<QPixmap,QPixmap> plusPix;
+    std::pair<QPixmap,QPixmap> clearPix;
+    std::pair<QPixmap,QPixmap> splitPix;
+    std::pair<QPixmap,QPixmap> settingsPix;
+    std::pair<QPixmap,QPixmap> undoPix;
+    std::pair<QPixmap,QPixmap> redoPix;
+    std::pair<QPixmap,QPixmap> pdfPix;
 
     QAction *newFileAction;
     QAction *openFileAction;
@@ -47,6 +38,7 @@ class MainWindow : public QMainWindow
     QAction *clearDisplayAction;
     QAction *undoAction;
     QAction *redoAction;
+    QAction *pdfAction;
 
     QGroupBox *themesGroupBox;
     QRadioButton *blackThemeButton;
@@ -73,6 +65,7 @@ protected slots:
     void themeChanging();
     void undoText();
     void redoText();
+    void saveToPdf();
 private:
     void iconChangeToBlack();
     void iconChangeToWhite();

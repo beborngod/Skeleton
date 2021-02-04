@@ -11,6 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#set(EXECUTABLE_OUTPUT_PATH  ${PROJECT_SOURCE_DIR}/bin/)
+
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
 # They need to be set before the find_package( ...) calls below.
@@ -24,8 +26,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
+find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+include_directories(/usr/include/qt5/QtPrintSupport)
 
 set(PROJECT_SOURCES
         main.cxx
@@ -52,3 +56,4 @@ else()
 endif()
 
 target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::PrintSupport)

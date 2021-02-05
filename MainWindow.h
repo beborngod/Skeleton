@@ -3,7 +3,6 @@
 #include <QPrinter>
 #include <vector>
 #include <map>
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -51,6 +50,9 @@ class MainWindow : public QMainWindow
     QRadioButton *transparentThemeButton;
 
     std::map<QString,QString>themes;
+
+    Syntaxhighlighter *syntaxMainEdit;
+    Syntaxhighlighter *secondMainEdit;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

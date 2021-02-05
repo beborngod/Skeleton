@@ -18,8 +18,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     mainEdit = new QTextEdit(this);
     secondEdit = new QTextEdit(this);
 
-    Syntaxhighlighter *syntax = new Syntaxhighlighter(mainEdit->document());
-
     splitter->addWidget(mainEdit);
     splitter->addWidget(secondEdit);
     secondEdit->hide();
@@ -154,6 +152,16 @@ void MainWindow::openFile()
 
         QString c_text = QFileDialog::getOpenFileName();
         QString s_text = c_text.simplified();
+        
+        QString tmp;
+        for(auto var = s_text.end()-1; *var != "."; --var){
+            tmp.push_front(*var);
+        }
+
+        if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
+            syntaxMainEdit = new Syntaxhighlighter(mainEdit->document());
+            syntaxMainEdit = new Syntaxhighlighter(secondEdit->document());
+        }
 
         if (not s_text.isEmpty())
         {

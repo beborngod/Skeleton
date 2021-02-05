@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     vboxLayoutSyntax->addWidget(noHighlightButton);
     vboxLayoutSyntax->addStretch(1);
 
-    auto syntaxGroupBox = new QGroupBox("       Syntax Highlighter:");
+    auto syntaxGroupBox = new QGroupBox("       Syntax Highlighter for C++:");
     syntaxGroupBox->setLayout(vboxLayoutSyntax);
 
     auto vboxSetting = new QVBoxLayout();

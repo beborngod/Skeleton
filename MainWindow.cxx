@@ -147,68 +147,15 @@ MainWindow::~MainWindow(){}
 
 void MainWindow::newFile()
 {
-    if(stackedWindows->currentIndex() == 0)
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+    focusEdit->clear();
+
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
+
+    if(reply == QMessageBox::Yes)
     {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-
-        focusEdit->clear();
-
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
-
-        if(reply == QMessageBox::Yes)
-        {
-            QString c_text = QFileDialog::getSaveFileName();
-            QString s_text = c_text.simplified();
-
-            if(not s_text.isEmpty())
-            {
-                QFile file(s_text);
-                file.open(QIODevice::WriteOnly);
-                file.write(focusEdit->toPlainText().toUtf8());
-                file.close();
-            }
-        }
-    }
-}
-
-void MainWindow::openFile()
-{
-    if(stackedWindows->currentIndex() == 0)
-    {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-
-        QString c_text = QFileDialog::getOpenFileName();
-        QString s_text = c_text.simplified();
-        
-        QString tmp;
-        for(auto var = s_text.end()-1; *var != "."; --var){
-            tmp.push_front(*var);
-        }
-
-        if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){   
-            setSyntaxHighlight();
-        }
-
-        if(not s_text.isEmpty())
-        {
-            QFile file(s_text);
-            if (file.open(QIODevice::ReadOnly))
-            {
-                focusEdit->clear();
-                focusEdit->append(QString(file.readAll()));
-            }
-            file.close();
-        }
-    }
-}
-
-void MainWindow::saveFile()
-{
-    if(stackedWindows->currentIndex() == 0)
-    {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
 
@@ -222,22 +169,63 @@ void MainWindow::saveFile()
     }
 }
 
+void MainWindow::openFile()
+{
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+    QString c_text = QFileDialog::getOpenFileName();
+    QString s_text = c_text.simplified();
+    
+    QString tmp;
+    for(auto var = s_text.end()-1; *var != "."; --var){
+        tmp.push_front(*var);
+    }
+
+    if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){   
+        setSyntaxHighlight();
+    }
+
+    if(not s_text.isEmpty())
+    {
+        QFile file(s_text);
+        if (file.open(QIODevice::ReadOnly))
+        {
+            focusEdit->clear();
+            focusEdit->append(QString(file.readAll()));
+        }
+        file.close();
+    }
+}
+
+void MainWindow::saveFile()
+{
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+    QString c_text = QFileDialog::getSaveFileName();
+    QString s_text = c_text.simplified();
+
+    if(not s_text.isEmpty())
+    {
+        QFile file(s_text);
+        file.open(QIODevice::WriteOnly);
+        file.write(focusEdit->toPlainText().toUtf8());
+        file.close();
+    }
+}
+
 void MainWindow::saveToPdf()
 {
-    if(stackedWindows->currentIndex() == 0)
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+    QString c_text = QFileDialog::getSaveFileName();
+    QString s_text = c_text.simplified();
+    if(not s_text.isEmpty())
     {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(QString("%1.pdf").arg(s_text));
 
-        QString c_text = QFileDialog::getSaveFileName();
-        QString s_text = c_text.simplified();
-        if(not s_text.isEmpty())
-        {
-            QPrinter printer(QPrinter::HighResolution);
-            printer.setOutputFormat(QPrinter::PdfFormat);
-            printer.setOutputFileName(QString("%1.pdf").arg(s_text));
-
-            focusEdit->document()->print(&printer);
-        }
+        focusEdit->document()->print(&printer);
     }
 }
 
@@ -272,76 +260,65 @@ void MainWindow::setSyntaxHighlight()
 
 void MainWindow::zoomTextIn()
 {
-    if(stackedWindows->currentIndex() == 0)
-    {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if(focusEdit == mainEdit)
-        {
-            mainEdit->zoomIn();
-            ++zoom_first_window;
-        }
-        else if(focusEdit == secondEdit)
-        {
-            secondEdit->zoomIn();
-            ++zoom_second_window;
-        }
+    if(focusEdit == mainEdit)
+    {
+        mainEdit->zoomIn();
+        ++zoom_first_window;
+    }
+    else if(focusEdit == secondEdit)
+    {
+        secondEdit->zoomIn();
+        ++zoom_second_window;
     }
 }
 
 void MainWindow::zoomTextOut()
 {
-    if(stackedWindows->currentIndex() == 0)
-    {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if(focusEdit == mainEdit)
+    if(focusEdit == mainEdit)
+    {
+        if(zoom_first_window >= 0)
         {
-            if(zoom_first_window >= 0)
-            {
-                mainEdit->zoomOut();
-                --zoom_first_window;
-            }
+            mainEdit->zoomOut();
+            --zoom_first_window;
         }
-        else if(focusEdit == secondEdit)
+    }
+    else if(focusEdit == secondEdit)
+    {
+        if(zoom_second_window >= 0)
         {
-            if(zoom_second_window >= 0)
-            {
-                secondEdit->zoomOut();
-                --zoom_second_window;
-            }
+            secondEdit->zoomOut();
+            --zoom_second_window;
         }
     }
 }
 
 void MainWindow::splitDisplay()
 {
-    if(stackedWindows->currentIndex() == 0)
+    if(secondEdit->isHidden())
     {
-        if(secondEdit->isHidden())
-        {
-            secondEdit->show();
-        }
-        else
-            secondEdit->hide();
+        secondEdit->show();
     }
+    else
+        secondEdit->hide();
 }
 
 void MainWindow::clear()
 {
-    if(stackedWindows->currentIndex() == 0)
-    {
-        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-        
-        if(not focusEdit->document()->isEmpty())
-        {
-            QMessageBox::StandardButton reply = QMessageBox::question(
-                this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
 
-            if(reply == QMessageBox::Yes)
-            {
-                focusEdit->clear();
-            }
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+    
+    if(not focusEdit->document()->isEmpty())
+    {
+        QMessageBox::StandardButton reply = QMessageBox::question(
+            this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
+
+        if(reply == QMessageBox::Yes)
+        {
+            focusEdit->clear();
         }
     }
 }
@@ -350,10 +327,32 @@ void MainWindow::settings()
 {
     if(stackedWindows->currentIndex() == 0)
     {
+        disconnect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
+        disconnect(newFileAction, &QAction::triggered, this, &MainWindow::newFile);
+        disconnect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
+        disconnect(saveFileAction, &QAction::triggered, this, &MainWindow::saveFile);
+        disconnect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
+        disconnect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
+        disconnect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
+        disconnect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
+        disconnect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
+        disconnect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
+        
         stackedWindows->setCurrentIndex(1);
     }
     else
     {
+        connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
+        connect(newFileAction, &QAction::triggered, this, &MainWindow::newFile);
+        connect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
+        connect(saveFileAction, &QAction::triggered, this, &MainWindow::saveFile);
+        connect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
+        connect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
+        connect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
+        connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
+        connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
+        connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
+        
         stackedWindows->setCurrentIndex(0);
     }
 }

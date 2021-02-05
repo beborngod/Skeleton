@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
 
     /* ---------themes in settings ---------*/
-    themesGroupBox = new QGroupBox("   Theme");
+    themesGroupBox = new QGroupBox("        Themes");
 
     defaultThemeButton = new QRadioButton("Default", this);
     transparentThemeButton = new QRadioButton("Transparent", this);
@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     defaultThemeButton->setChecked(true);
 
     auto labelBetaTheme = new QLabel(this);
-    labelBetaTheme->setText("Beta:");
+    labelBetaTheme->setText("Beta themes:");
 
     auto vboxLayoutThemes = new QVBoxLayout();
     vboxLayoutThemes->addWidget(defaultThemeButton);
@@ -88,10 +88,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     vboxLayoutThemes->addWidget(macosThemeButton);
 
     vboxLayoutThemes->addSpacing(10);
-    vboxLayoutThemes->addStretch(1);
-
     themesGroupBox->setLayout(vboxLayoutThemes);
-    stackedWindows->addWidget(themesGroupBox);
+
+    auto vboxLayoutSyntax = new QVBoxLayout();
+    syntaxPartisanerButton = new QRadioButton("Partisaner", this);
+    syntaxExpanButton = new QRadioButton("ExPan", this);
+    syntaxPartisanerButton->setChecked(true);
+
+
+    vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
+    vboxLayoutSyntax->addWidget(syntaxExpanButton);
+    vboxLayoutSyntax->addStretch(1);
+
+    auto syntaxGroupBox = new QGroupBox("       Syntax Highlighter:");
+    syntaxGroupBox->setLayout(vboxLayoutSyntax);
+
+    auto vboxSetting = new QVBoxLayout();
+    vboxSetting->addWidget(themesGroupBox);
+    vboxSetting->addWidget(syntaxGroupBox);
+
+
+    auto settingsGroupBox = new QGroupBox("Settings");
+    settingsGroupBox->setLayout(vboxSetting);
+
+    stackedWindows->addWidget(settingsGroupBox);
 
     /* ----------connection theme changing in settingd----------- */
     connect(defaultThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
@@ -101,6 +121,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(transparentThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(aquaThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(macosThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
+
+    /* ----------connection syntax highlighter changing in settingd */
+    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
+    connect(syntaxExpanButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
@@ -115,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(stackedWindows);
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow(){}
 
 void MainWindow::newFile()
 {
@@ -153,15 +177,15 @@ void MainWindow::openFile()
         QString c_text = QFileDialog::getOpenFileName();
         QString s_text = c_text.simplified();
         
-        QString tmp;
+        /* QString tmp;
         for(auto var = s_text.end()-1; *var != "."; --var){
             tmp.push_front(*var);
         }
 
-        if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
-            syntaxMainEdit = new Syntaxhighlighter(mainEdit->document());
-            syntaxMainEdit = new Syntaxhighlighter(secondEdit->document());
-        }
+        if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){   
+            syntaxCheckBox->setChecked(true);
+            setSyntaxHighlight(); */
+        //}
 
         if (not s_text.isEmpty())
         {
@@ -211,6 +235,18 @@ void MainWindow::saveToPdf()
 
             focusEdit->document()->print(&printer);
         }
+    }
+}
+
+void MainWindow::setSyntaxHighlight() 
+{
+    if(syntaxPartisanerButton->isChecked()){
+        syntaxPartisanerMainEdit = new SyntaxPartisaner(mainEdit->document());
+        syntaxPartisanerSecondEdit = new SyntaxPartisaner(secondEdit->document());
+    }
+    else if(syntaxExpanButton->isChecked()){
+        syntaxExpanMainEdit = new SyntaxExpan(mainEdit->document());
+        syntaxExpanSecondEdit = new SyntaxExpan(secondEdit->document());
     }
 }
 

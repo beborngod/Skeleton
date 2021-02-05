@@ -49,10 +49,16 @@ class MainWindow : public QMainWindow
     QRadioButton *macosThemeButton;
     QRadioButton *transparentThemeButton;
 
+    QRadioButton *syntaxPartisanerButton;
+    QRadioButton *syntaxExpanButton;
+
     std::map<QString,QString>themes;
 
-    Syntaxhighlighter *syntaxMainEdit;
-    Syntaxhighlighter *secondMainEdit;
+    SyntaxPartisaner *syntaxPartisanerMainEdit;
+    SyntaxPartisaner *syntaxPartisanerSecondEdit;
+
+    SyntaxExpan *syntaxExpanMainEdit;
+    SyntaxExpan *syntaxExpanSecondEdit;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -69,6 +75,7 @@ protected slots:
     void undoText();
     void redoText();
     void saveToPdf();
+    void setSyntaxHighlight();
 private:
     void iconChangeToBlack();
     void iconChangeToWhite();

@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     mainEdit = new QTextEdit(this);
     secondEdit = new QTextEdit(this);
 
+    Syntaxhighlighter *syntax = new Syntaxhighlighter(mainEdit->document());
+
     splitter->addWidget(mainEdit);
     splitter->addWidget(secondEdit);
     secondEdit->hide();
@@ -26,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     stackedWindows->addWidget(splitter);
     stackedWindows->setCurrentIndex(0);
-
+    
     /* --Load Icons and Themes */
     loadIcons();
     loadThemes();

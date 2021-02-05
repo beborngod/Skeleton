@@ -26,8 +26,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport Core Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport Core Gui REQUIRED)
 find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
 include_directories(/usr/include/qt5/QtPrintSupport)
 
@@ -35,6 +35,8 @@ set(PROJECT_SOURCES
         main.cxx
         MainWindow.cxx
         MainWindow.h
+        Syntaxhighlighter.cxx
+        Syntaxhighlighter.h
 )
 
 qt5_add_resources(PROJECT_SOURCES images.qrc stylesheet.qrc)
@@ -57,3 +59,5 @@ endif()
 
 target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::PrintSupport)
+target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(Skeleton PRIVATE Qt${QT_VERSION_MAJOR}::Gui)

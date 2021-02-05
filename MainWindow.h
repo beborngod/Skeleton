@@ -1,3 +1,4 @@
+#include "Syntaxhighlighter.h"
 #include <QtWidgets>
 #include <QPrinter>
 #include <vector>

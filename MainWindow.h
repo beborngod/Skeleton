@@ -1,4 +1,4 @@
-#include "Syntaxhighlighter.h"
+#include "SyntaxPartisaner.h"
 #include <QtWidgets>
 #include <QPrinter>
 #include <vector>
@@ -51,14 +51,11 @@ class MainWindow : public QMainWindow
 
     QRadioButton *syntaxPartisanerButton;
     QRadioButton *syntaxExpanButton;
+    QRadioButton *noHighlightButton;
 
     std::map<QString,QString>themes;
 
-    SyntaxPartisaner *syntaxPartisanerMainEdit;
-    SyntaxPartisaner *syntaxPartisanerSecondEdit;
-
-    SyntaxExpan *syntaxExpanMainEdit;
-    SyntaxExpan *syntaxExpanSecondEdit;
+    SyntaxPartisaner *syntax;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

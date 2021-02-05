@@ -90,14 +90,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     vboxLayoutThemes->addSpacing(10);
     themesGroupBox->setLayout(vboxLayoutThemes);
 
-    auto vboxLayoutSyntax = new QVBoxLayout();
+    /* ----------syntax highlighter in settings----------- */
+    
     syntaxPartisanerButton = new QRadioButton("Partisaner", this);
     syntaxExpanButton = new QRadioButton("ExPan", this);
+    noHighlightButton = new QRadioButton("No highlight", this);
     syntaxPartisanerButton->setChecked(true);
 
-
+    auto vboxLayoutSyntax = new QVBoxLayout();
     vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
     vboxLayoutSyntax->addWidget(syntaxExpanButton);
+    vboxLayoutSyntax->addWidget(noHighlightButton);
     vboxLayoutSyntax->addStretch(1);
 
     auto syntaxGroupBox = new QGroupBox("       Syntax Highlighter:");
@@ -125,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     /* ----------connection syntax highlighter changing in settingd */
     connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
     connect(syntaxExpanButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
+    connect(noHighlightButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
@@ -143,7 +147,7 @@ MainWindow::~MainWindow(){}
 
 void MainWindow::newFile()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
@@ -152,12 +156,12 @@ void MainWindow::newFile()
         QMessageBox::StandardButton reply = QMessageBox::question(
             this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
 
-        if (reply == QMessageBox::Yes)
+        if(reply == QMessageBox::Yes)
         {
             QString c_text = QFileDialog::getSaveFileName();
             QString s_text = c_text.simplified();
 
-            if (not s_text.isEmpty())
+            if(not s_text.isEmpty())
             {
                 QFile file(s_text);
                 file.open(QIODevice::WriteOnly);
@@ -170,24 +174,23 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getOpenFileName();
         QString s_text = c_text.simplified();
         
-        /* QString tmp;
+        QString tmp;
         for(auto var = s_text.end()-1; *var != "."; --var){
             tmp.push_front(*var);
         }
 
         if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){   
-            syntaxCheckBox->setChecked(true);
-            setSyntaxHighlight(); */
-        //}
+            setSyntaxHighlight();
+        }
 
-        if (not s_text.isEmpty())
+        if(not s_text.isEmpty())
         {
             QFile file(s_text);
             if (file.open(QIODevice::ReadOnly))
@@ -202,14 +205,14 @@ void MainWindow::openFile()
 
 void MainWindow::saveFile()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
 
-        if (not s_text.isEmpty())
+        if(not s_text.isEmpty())
         {
             QFile file(s_text);
             file.open(QIODevice::WriteOnly);
@@ -221,13 +224,13 @@ void MainWindow::saveFile()
 
 void MainWindow::saveToPdf()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
-        if (not s_text.isEmpty())
+        if(not s_text.isEmpty())
         {
             QPrinter printer(QPrinter::HighResolution);
             printer.setOutputFormat(QPrinter::PdfFormat);
@@ -240,28 +243,47 @@ void MainWindow::saveToPdf()
 
 void MainWindow::setSyntaxHighlight() 
 {
-    if(syntaxPartisanerButton->isChecked()){
-        syntaxPartisanerMainEdit = new SyntaxPartisaner(mainEdit->document());
-        syntaxPartisanerSecondEdit = new SyntaxPartisaner(secondEdit->document());
+    if(syntaxPartisanerButton->isChecked())
+    {
+        syntax = new SyntaxPartisaner(mainEdit->document(),
+                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
+                        Qt::darkGreen,QColor("#00f8a2"));
+
+        syntax = new SyntaxPartisaner(secondEdit->document(),
+                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
+                        Qt::darkGreen,QColor("#00f8a2"));
+
+        //syntaxPartisanerSecondEdit = new SyntaxPartisaner(secondEdit->document());
     }
-    else if(syntaxExpanButton->isChecked()){
-        syntaxExpanMainEdit = new SyntaxExpan(mainEdit->document());
-        syntaxExpanSecondEdit = new SyntaxExpan(secondEdit->document());
+    else if(syntaxExpanButton->isChecked())
+    {
+        syntax = new SyntaxPartisaner(mainEdit->document(),
+                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
+                        Qt::cyan,Qt::darkGreen);
+
+        syntax = new SyntaxPartisaner(secondEdit->document(),
+                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
+                        Qt::cyan,QColor("#007efc"));
+    }
+    else if(noHighlightButton->isChecked())
+    {
+        syntax = new SyntaxPartisaner(mainEdit->document());
+        syntax = new SyntaxPartisaner(secondEdit->document());
     }
 }
 
 void MainWindow::zoomTextIn()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if (focusEdit == mainEdit)
+        if(focusEdit == mainEdit)
         {
             mainEdit->zoomIn();
             ++zoom_first_window;
         }
-        else if (focusEdit == secondEdit)
+        else if(focusEdit == secondEdit)
         {
             secondEdit->zoomIn();
             ++zoom_second_window;
@@ -271,21 +293,21 @@ void MainWindow::zoomTextIn()
 
 void MainWindow::zoomTextOut()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if (focusEdit == mainEdit)
+        if(focusEdit == mainEdit)
         {
-            if (zoom_first_window >= 0)
+            if(zoom_first_window >= 0)
             {
                 mainEdit->zoomOut();
                 --zoom_first_window;
             }
         }
-        else if (focusEdit == secondEdit)
+        else if(focusEdit == secondEdit)
         {
-            if (zoom_second_window >= 0)
+            if(zoom_second_window >= 0)
             {
                 secondEdit->zoomOut();
                 --zoom_second_window;
@@ -296,9 +318,9 @@ void MainWindow::zoomTextOut()
 
 void MainWindow::splitDisplay()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
-        if (secondEdit->isHidden())
+        if(secondEdit->isHidden())
         {
             secondEdit->show();
         }
@@ -309,16 +331,16 @@ void MainWindow::splitDisplay()
 
 void MainWindow::clear()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
         
-        if (not focusEdit->document()->isEmpty())
+        if(not focusEdit->document()->isEmpty())
         {
             QMessageBox::StandardButton reply = QMessageBox::question(
                 this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
 
-            if (reply == QMessageBox::Yes)
+            if(reply == QMessageBox::Yes)
             {
                 focusEdit->clear();
             }
@@ -328,7 +350,7 @@ void MainWindow::clear()
 
 void MainWindow::settings()
 {
-    if (stackedWindows->currentIndex() == 0)
+    if(stackedWindows->currentIndex() == 0)
     {
         stackedWindows->setCurrentIndex(1);
     }
@@ -340,43 +362,43 @@ void MainWindow::settings()
 
 void MainWindow::themeChanging()
 {
-    if (defaultThemeButton->isChecked())
+    if(defaultThemeButton->isChecked())
     {
         auto it = themes.find("default");
         setStyleSheet(it->second);
         iconChangeToWhite();
     }
-    else if (blackThemeButton->isChecked())
+    else if(blackThemeButton->isChecked())
     {
         auto it = themes.find("black");
         setStyleSheet(it->second);
         iconChangeToWhite();
     }
-    else if (whiteThemeButton->isChecked())
+    else if(whiteThemeButton->isChecked())
     {
         auto it = themes.find("white");
         setStyleSheet(it->second);
         iconChangeToBlack();
     }
-    else if (spybotThemeButton->isChecked())
+    else if(spybotThemeButton->isChecked())
     {
         auto it = themes.find("spybot");
         setStyleSheet(it->second);
         iconChangeToWhite();
     }
-    else if (transparentThemeButton->isChecked())
+    else if(transparentThemeButton->isChecked())
     {
         auto it = themes.find("transparent");
         setStyleSheet(it->second);
         iconChangeToWhite();
     }
-    else if (aquaThemeButton->isChecked())
+    else if(aquaThemeButton->isChecked())
     {
         auto it = themes.find("aqua");
         setStyleSheet(it->second);
         iconChangeToBlack();
     }
-    else if (macosThemeButton->isChecked())
+    else if(macosThemeButton->isChecked())
     {
         auto it = themes.find("macos");
         setStyleSheet(it->second);
@@ -470,7 +492,7 @@ void MainWindow::loadThemes()
     std::vector<QString> themeNames = {
         "default", "black", "white", "spybot", "aqua", "macos", "transparent"};
 
-    for (size_t var = 0; var < styleSheetFilenames.size(); var++)
+    for(size_t var = 0; var < styleSheetFilenames.size(); var++)
     {
         styleSheetFile.setFileName(styleSheetFilenames[var]);
         styleSheetFile.open(QFile::ReadOnly);

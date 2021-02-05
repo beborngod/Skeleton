@@ -35,8 +35,8 @@ set(PROJECT_SOURCES
         main.cxx
         MainWindow.cxx
         MainWindow.h
-        Syntaxhighlighter.cxx
-        Syntaxhighlighter.h
+        SyntaxPartisaner.cxx
+        SyntaxPartisaner.h
 )
 
 qt5_add_resources(PROJECT_SOURCES images.qrc stylesheet.qrc)

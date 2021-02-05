@@ -257,11 +257,11 @@ void MainWindow::setSyntaxHighlight()
     {
         syntax = new SyntaxPartisaner(mainEdit->document(),
                         QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
-                        Qt::cyan,Qt::darkGreen);
+                        QColor("#409ffe"),Qt::cyan);
 
         syntax = new SyntaxPartisaner(secondEdit->document(),
                         QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
-                        Qt::cyan,QColor("#007efc"));
+                        QColor("#409ffe"),Qt::cyan);
     }
     else if(noHighlightButton->isChecked())
     {

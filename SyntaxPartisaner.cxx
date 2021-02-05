@@ -60,26 +60,14 @@ SyntaxPartisaner::SyntaxPartisaner(QTextDocument *parent) : QSyntaxHighlighter(p
 {
     HighlightingRule rule;
 
-    keywordFormat.setForeground(Qt::white);/* Qt::cyan */
-
     QStringList keywordPatterns;
-    keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
-                    << "\\bdouble\\b" << "\\benum\\b" << "\\bexplicit\\b"
-                    << "\\bfriend\\b" << "\\binline\\b" << "\\bint\\b"
-                    << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
-                    << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                    << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
-                    << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
-                    << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
-                    << "\\bvoid\\b" << "\\bvolatile\\b" <<"\\bwhile\\b"
-                    << "\\bfor\\b" <<"\\bif\\b" <<"\\bor\\b" <<"\\band\\b"
-                    << "\\belse\\b";
 
-    for(const QString &pattern: keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
-        rule.format = keywordFormat;
-        highlightingRules.append(rule);
+    if(not keywordPatterns.isEmpty()){
+        for(const QString &pattern: keywordPatterns) {
+            rule.pattern = QRegExp(pattern);
+            rule.format = keywordFormat;
+            highlightingRules.append(rule);
+        }
     }
 
     commentStartExpression = QRegExp("/\\*");

@@ -20,7 +20,8 @@ SyntaxPartisaner::SyntaxPartisaner(QTextDocument *parent,QColor keywordColor,
                     << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
                     << "\\bvoid\\b" << "\\bvolatile\\b" <<"\\bwhile\\b"
                     << "\\bfor\\b" <<"\\bif\\b" <<"\\bor\\b" <<"\\band\\b"
-                    << "\\belse\\b";
+                    << "\\belse\\b" << "\\bbool\\b" << "\\btry\\b" << "\\bcatch\\b"
+                    << "\\bthrow\\b" << "\\bassert\\b" << "\\btrue\\b" << "\\bfalse\\b";
 
     for(const QString &pattern: keywordPatterns) {
         rule.pattern = QRegExp(pattern);

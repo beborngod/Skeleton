@@ -252,8 +252,6 @@ void MainWindow::setSyntaxHighlight()
         syntax = new SyntaxPartisaner(secondEdit->document(),
                         Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
                         Qt::darkGreen,QColor("#00f8a2"));
-
-        //syntaxPartisanerSecondEdit = new SyntaxPartisaner(secondEdit->document());
     }
     else if(syntaxExpanButton->isChecked())
     {

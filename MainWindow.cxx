@@ -95,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     syntaxPartisanerButton = new QRadioButton("Partisaner", this);
     syntaxExpanButton = new QRadioButton("ExPan", this);
     noHighlightButton = new QRadioButton("No highlight", this);
-    syntaxPartisanerButton->setChecked(true);
+    noHighlightButton->setChecked(true);
 
     auto vboxLayoutSyntax = new QVBoxLayout();
     vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
@@ -138,6 +138,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto it = themes.find("default");
     setStyleSheet(it->second);
     iconChangeToWhite();
+    setSyntaxHighlight();
 
     /* ----------Central widget----------- */
     setCentralWidget(stackedWindows);
@@ -181,8 +182,11 @@ void MainWindow::openFile()
         tmp.push_front(*var);
     }
 
-    if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){   
-        setSyntaxHighlight();
+    if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
+        if(not syntaxPartisanerButton->isChecked() and not syntaxExpanButton->isChecked()){
+            syntaxPartisanerButton->setChecked(true);   
+            setSyntaxHighlight();
+        }
     }
 
     if(not s_text.isEmpty())

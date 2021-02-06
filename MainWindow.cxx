@@ -5,7 +5,16 @@ static int zoom_second_window = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    qApp->setOrganizationName("Partisaner");
+    qApp->setApplicationName("Skeleton");
+
+    settings = new QSettings(this);
+
+    /* -------Sizes----------- */
     QSize iconActionSize(20, 20);
+    setMinimumHeight(395);
+    setMinimumWidth(300);
+
     /* ---------Creating toolbar--------- */
     toolbar = new QToolBar(this);
     toolbar->setOrientation(Qt::Horizontal);
@@ -27,9 +36,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stackedWindows->addWidget(splitter);
     stackedWindows->setCurrentIndex(0);
     
-    /* --Load Icons and Themes */
+    /* ------------Load Icons, Themes and Settings-------- */
     loadIcons();
     loadThemes();
+    loadSettings();
 
     /* -------setting Action for Tool bar----------- */
     newFileAction = toolbar->addAction("New file");
@@ -57,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
     connect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
     connect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
-    connect(settingsAction, &QAction::triggered, this, &MainWindow::settings);
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::goToSettings);
     connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
     connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
     connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
@@ -132,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
-    connect(settingShortcut, &QShortcut::activated, this, &MainWindow::settings);
+    connect(settingShortcut, &QShortcut::activated, this, &MainWindow::goToSettings);
 
     /* ----------setting Default theme----------- */
     auto it = themes.find("default");
@@ -144,7 +154,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(stackedWindows);
 }
 
-MainWindow::~MainWindow(){}
+MainWindow::~MainWindow()
+{
+    saveSettings();
+}
 
 void MainWindow::newFile()
 {
@@ -327,7 +340,7 @@ void MainWindow::clear()
     }
 }
 
-void MainWindow::settings()
+void MainWindow::goToSettings()
 {
     if(stackedWindows->currentIndex() == 0)
     {
@@ -446,6 +459,16 @@ void MainWindow::loadIcons()
     undoPix.second.load(":/035-return_white.png");
     redoPix.second.load(":/035-return_reversed_white.png");
     pdfPix.second.load(":/document_white.png");
+}
+
+void MainWindow::loadSettings() 
+{
+    setGeometry(settings->value("geometry",QSize(100,700)).toRect());
+}
+
+void MainWindow::saveSettings() 
+{
+    settings->setValue("geometry",geometry());
 }
 
 void MainWindow::iconChangeToBlack()

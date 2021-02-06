@@ -1,5 +1,7 @@
 #include "SyntaxPartisaner.h"
 #include <QtWidgets>
+#include <QtCore>
+#include <QtGui>
 #include <QPrinter>
 #include <vector>
 #include <map>
@@ -56,6 +58,8 @@ class MainWindow : public QMainWindow
     std::map<QString,QString>themes;
 
     SyntaxPartisaner *syntax;
+
+    QSettings *settings;
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -67,7 +71,7 @@ protected slots:
     void zoomTextOut();
     void splitDisplay();
     void clear();
-    void settings();
+    void goToSettings();
     void themeChanging();
     void undoText();
     void redoText();
@@ -78,4 +82,6 @@ private:
     void iconChangeToWhite();
     void loadThemes();
     void loadIcons();
+    void loadSettings();
+    void saveSettings();
 };

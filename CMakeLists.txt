@@ -28,8 +28,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport Core Gui REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport Core Gui REQUIRED)
-find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+#find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
 include_directories(/usr/include/qt5/QtPrintSupport)
+include_directories(/usr/include/qt5/QtCore)
+include_directories(/usr/include/qt5/QtGui)
 
 set(PROJECT_SOURCES
         main.cxx

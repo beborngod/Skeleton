@@ -39,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     /* ------------Load Icons, Themes and Settings-------- */
     loadIcons();
     loadThemes();
-    loadSettings();
 
     /* -------setting Action for Tool bar----------- */
     newFileAction = toolbar->addAction("New file");
@@ -135,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(aquaThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
     connect(macosThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
 
+
     /* ----------connection syntax highlighter changing in settingd */
     connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
     connect(syntaxExpanButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
@@ -145,10 +145,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(settingShortcut, &QShortcut::activated, this, &MainWindow::goToSettings);
 
     /* ----------setting Default theme----------- */
-    auto it = themes.find("default");
-    setStyleSheet(it->second);
-    iconChangeToWhite();
+    //setTheme("default",WHITE_ICONS);
+    
     setSyntaxHighlight();
+
+    /* ---------load settings----------- */
+    loadSettings();
 
     /* ----------Central widget----------- */
     setCentralWidget(stackedWindows);
@@ -275,6 +277,66 @@ void MainWindow::setSyntaxHighlight()
     }
 }
 
+QString MainWindow::getTheme() 
+{
+    QString currentTheme; 
+
+    if(defaultThemeButton->isChecked())
+    {
+        currentTheme = "default";
+    }
+    else if(blackThemeButton->isChecked())
+    {
+        currentTheme = "black";
+    }
+    else if(whiteThemeButton->isChecked())
+    {
+        currentTheme = "white";
+    }
+    else if(spybotThemeButton->isChecked())
+    {
+        currentTheme = "spybot";
+    }
+    else if(transparentThemeButton->isChecked())
+    {
+        currentTheme = "transparent";
+    }
+    else if(aquaThemeButton->isChecked())
+    {
+        currentTheme = "aqua";
+    }
+    else if(macosThemeButton->isChecked())
+    {
+        currentTheme = "macos";
+    }
+
+    return currentTheme;
+}
+
+void MainWindow::setTheme(QString theme,int color) 
+{
+    auto it = themes.find(theme);
+    setStyleSheet(it->second);
+
+    if(color == BLACK_ICONS)
+        iconChangeToBlack();
+    if(color == WHITE_ICONS)
+        iconChangeToWhite();
+}
+
+int MainWindow::getThemeIcons() 
+{
+    QString th = getTheme();
+    int color;
+
+    if(th == "default" or th == "black" or th == "spybot" or th == "transparent")
+        color = 2;
+    else
+        color = 1;
+
+    return color;
+}
+
 void MainWindow::zoomTextIn()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
@@ -378,45 +440,31 @@ void MainWindow::themeChanging()
 {
     if(defaultThemeButton->isChecked())
     {
-        auto it = themes.find("default");
-        setStyleSheet(it->second);
-        iconChangeToWhite();
+        setTheme("default",WHITE_ICONS);
     }
     else if(blackThemeButton->isChecked())
     {
-        auto it = themes.find("black");
-        setStyleSheet(it->second);
-        iconChangeToWhite();
+        setTheme("black",WHITE_ICONS);
     }
     else if(whiteThemeButton->isChecked())
     {
-        auto it = themes.find("white");
-        setStyleSheet(it->second);
-        iconChangeToBlack();
+        setTheme("white",BLACK_ICONS);
     }
     else if(spybotThemeButton->isChecked())
     {
-        auto it = themes.find("spybot");
-        setStyleSheet(it->second);
-        iconChangeToWhite();
+        setTheme("spybot",WHITE_ICONS);
     }
     else if(transparentThemeButton->isChecked())
     {
-        auto it = themes.find("transparent");
-        setStyleSheet(it->second);
-        iconChangeToWhite();
+        setTheme("transparent",WHITE_ICONS);
     }
     else if(aquaThemeButton->isChecked())
     {
-        auto it = themes.find("aqua");
-        setStyleSheet(it->second);
-        iconChangeToBlack();
+        setTheme("aqua",BLACK_ICONS);
     }
     else if(macosThemeButton->isChecked())
     {
-        auto it = themes.find("macos");
-        setStyleSheet(it->second);
-        iconChangeToBlack();
+        setTheme("macos",BLACK_ICONS);
     }
 }
 
@@ -463,12 +511,15 @@ void MainWindow::loadIcons()
 
 void MainWindow::loadSettings() 
 {
-    setGeometry(settings->value("geometry",QSize(100,700)).toRect());
+    setGeometry(settings->value("geometry",QRect(1000,700,1000,500)).toRect());
+    setTheme(settings->value("theme").toString(),settings->value("themeIcons").toInt());
 }
 
 void MainWindow::saveSettings() 
 {
     settings->setValue("geometry",geometry());
+    settings->setValue("theme",getTheme());
+    settings->setValue("themeIcons",getThemeIcons());
 }
 
 void MainWindow::iconChangeToBlack()

@@ -5,7 +5,7 @@
 #include <QPrinter>
 #include <vector>
 #include <map>
-class MainWindow : public QMainWindow
+class MainWindow final : public QMainWindow
 {
     Q_OBJECT
 
@@ -60,6 +60,8 @@ class MainWindow : public QMainWindow
     SyntaxPartisaner *syntax;
 
     QSettings *settings;
+
+    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 };
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -78,6 +80,10 @@ protected slots:
     void saveToPdf();
     void setSyntaxHighlight();
 private:
+    QString getTheme();
+    void setTheme(QString theme = "default",int color = WHITE_ICONS);
+    int getThemeIcons();
+    void getHighlight();
     void iconChangeToBlack();
     void iconChangeToWhite();
     void loadThemes();

@@ -574,6 +574,11 @@ void Skeleton::loadSettings()
         setTheme();
         setRadionButtonChecked("default");
     }
+
+    QFont font(settings->value("font").toString());
+    zoom_first_window = font.pointSize();
+    zoom_second_window  = font.pointSize();
+    firstEdit->setFont(font);
 }
 
 void Skeleton::saveSettings() 
@@ -581,6 +586,7 @@ void Skeleton::saveSettings()
     settings->setValue("geometry",geometry());
     settings->setValue("theme",getTheme());
     settings->setValue("themeIcons",getThemeIcons());
+    settings->setValue("font",editFont.toString());
 }
 
 /* ---------------------------------------------------------------------------------- */

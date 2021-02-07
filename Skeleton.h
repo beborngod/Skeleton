@@ -5,14 +5,14 @@
 #include <QPrinter>
 #include <vector>
 #include <map>
-class MainWindow final : public QMainWindow
+class Skeleton final : public QMainWindow
 {
     Q_OBJECT
 
     QToolBar *toolbar;
 
     QSplitter *splitter;
-    QTextEdit *mainEdit;
+    QTextEdit *firstEdit;
     QTextEdit *secondEdit;
     QTextEdit *focusEdit;
 
@@ -48,7 +48,7 @@ class MainWindow final : public QMainWindow
     QRadioButton *defaultThemeButton;
     QRadioButton *spybotThemeButton;
     QRadioButton *aquaThemeButton;
-    QRadioButton *macosThemeButton;
+    QRadioButton *bubbleThemeButton;
     QRadioButton *transparentThemeButton;
 
     QRadioButton *syntaxPartisanerButton;
@@ -63,8 +63,8 @@ class MainWindow final : public QMainWindow
 
     enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 };
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit Skeleton(QWidget *parent = nullptr);
+    ~Skeleton();
 protected slots:
     void newFile();
     void openFile();
@@ -79,12 +79,14 @@ protected slots:
     void redoText();
     void saveToPdf();
     void setSyntaxHighlight();
+    void setFontEdit();
 private:
     QString getTheme();
     void setTheme(QString theme = "default",int color = WHITE_ICONS);
     int getThemeIcons();
     void getHighlight();
     void setRadionButtonChecked(QString radioButton);
+
     void iconChangeToBlack();
     void iconChangeToWhite();
     void loadThemes();

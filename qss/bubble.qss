@@ -1,11 +1,11 @@
 /*
- * MacOS Style Sheet for QT Applications
+ * bubble Style Sheet for QT Applications
  * Author: Jaime A. Quiroga P.
  * Company: GTRONICK
  * Last updated: 25/12/2020, 23:10.
- * Available at: https://github.com/GTRONICK/QSS/blob/master/MacOS.qss
+ * Available at: https://github.com/GTRONICK/QSS/blob/master/bubble.qss
  */
-QMainWindow {
+QSkeleton {
     background-color:#ececec;
 }
 QGroupBox{

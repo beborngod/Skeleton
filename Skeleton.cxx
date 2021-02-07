@@ -1,9 +1,9 @@
-#include "MainWindow.h"
+#include "Skeleton.h"
 
 static int zoom_first_window = 0;
 static int zoom_second_window = 0;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
 {
     qApp->setOrganizationName("Partisaner");
     qApp->setApplicationName("Skeleton");
@@ -24,12 +24,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
     splitter = new QSplitter(Qt::Horizontal, this);
-    mainEdit = new QTextEdit(this);
-    mainEdit->setTabStopDistance(30);
+    firstEdit = new QTextEdit(this);
+    firstEdit->setTabStopDistance(30);
+
     secondEdit = new QTextEdit(this);
     secondEdit->setTabStopDistance(30);
 
-    splitter->addWidget(mainEdit);
+    splitter->addWidget(firstEdit);
     splitter->addWidget(secondEdit);
     secondEdit->hide();
 
@@ -61,17 +62,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     settingsAction = toolbar->addAction("Settings");
 
     /* --------Tool bar Sognal-Slot connection------------*/
-    connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
-    connect(newFileAction, &QAction::triggered, this, &MainWindow::newFile);
-    connect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
-    connect(saveFileAction, &QAction::triggered, this, &MainWindow::saveFile);
-    connect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
-    connect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
-    connect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
-    connect(settingsAction, &QAction::triggered, this, &MainWindow::goToSettings);
-    connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
-    connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
-    connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
+    connect(clearDisplayAction, &QAction::triggered, this, &Skeleton::clear);
+    connect(newFileAction, &QAction::triggered, this, &Skeleton::newFile);
+    connect(openFileAction, &QAction::triggered, this, &Skeleton::openFile);
+    connect(saveFileAction, &QAction::triggered, this, &Skeleton::saveFile);
+    connect(zoomInAction, &QAction::triggered, this, &Skeleton::zoomTextIn);
+    connect(zoomOutAction, &QAction::triggered, this, &Skeleton::zoomTextOut);
+    connect(splitAction, &QAction::triggered, this, &Skeleton::splitDisplay);
+    connect(settingsAction, &QAction::triggered, this, &Skeleton::goToSettings);
+    connect(undoAction, &QAction::triggered, this, &Skeleton::undoText);
+    connect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
+    connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
 
     /* ---------themes in settings ---------*/
     themesGroupBox = new QGroupBox("        Themes");
@@ -81,22 +82,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     blackThemeButton = new QRadioButton("Black", this);
     whiteThemeButton = new QRadioButton("White", this);
     spybotThemeButton = new QRadioButton("SpyBot", this);
-    aquaThemeButton = new QRadioButton("Aqua", this);
-    macosThemeButton = new QRadioButton("MacOS", this);
+    bubbleThemeButton = new QRadioButton("Bubble", this);
     defaultThemeButton->setChecked(true);
 
-    auto labelBetaTheme = new QLabel(this);
-    labelBetaTheme->setText("Beta themes:");
-
+    /* ------collect theme buttons-------- */
     auto vboxLayoutThemes = new QVBoxLayout();
     vboxLayoutThemes->addWidget(defaultThemeButton);
-    vboxLayoutThemes->addWidget(transparentThemeButton);
     vboxLayoutThemes->addWidget(blackThemeButton);
     vboxLayoutThemes->addWidget(whiteThemeButton);
-    vboxLayoutThemes->addWidget(labelBetaTheme);
     vboxLayoutThemes->addWidget(spybotThemeButton);
-    vboxLayoutThemes->addWidget(aquaThemeButton);
-    vboxLayoutThemes->addWidget(macosThemeButton);
+    vboxLayoutThemes->addWidget(bubbleThemeButton);
+
+    auto kvantumLabel = new QLabel("Work only with Kvantum theme:");
+    vboxLayoutThemes->addWidget(kvantumLabel);
+    vboxLayoutThemes->addWidget(transparentThemeButton);
 
     vboxLayoutThemes->addSpacing(10);
     themesGroupBox->setLayout(vboxLayoutThemes);
@@ -128,23 +127,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stackedWindows->addWidget(settingsGroupBox);
 
     /* ----------connection theme changing in settingd----------- */
-    connect(defaultThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(whiteThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(blackThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(spybotThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(transparentThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(aquaThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-    connect(macosThemeButton, &QRadioButton::clicked, this, &MainWindow::themeChanging);
-
+    connect(defaultThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(whiteThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(blackThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(spybotThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(transparentThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
 
     /* ----------connection syntax highlighter changing in settingd */
-    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
-    connect(syntaxExpanButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
-    connect(noHighlightButton, &QRadioButton::clicked, this, &MainWindow::setSyntaxHighlight);
+    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    connect(syntaxExpanButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
-    connect(settingShortcut, &QShortcut::activated, this, &MainWindow::goToSettings);
+    connect(settingShortcut, &QShortcut::activated, this, &Skeleton::goToSettings);
 
     /* ----------setting Default theme----------- */
     //setTheme("default",WHITE_ICONS);
@@ -158,12 +155,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(stackedWindows);
 }
 
-MainWindow::~MainWindow()
+Skeleton::~Skeleton()
 {
     saveSettings();
 }
 
-void MainWindow::newFile()
+void Skeleton::newFile()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
@@ -187,7 +184,7 @@ void MainWindow::newFile()
     }
 }
 
-void MainWindow::openFile()
+void Skeleton::openFile()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
@@ -218,7 +215,7 @@ void MainWindow::openFile()
     }
 }
 
-void MainWindow::saveFile()
+void Skeleton::saveFile()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
@@ -234,7 +231,7 @@ void MainWindow::saveFile()
     }
 }
 
-void MainWindow::saveToPdf()
+void Skeleton::saveToPdf()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
@@ -250,11 +247,11 @@ void MainWindow::saveToPdf()
     }
 }
 
-void MainWindow::setSyntaxHighlight() 
+void Skeleton::setSyntaxHighlight() 
 {
     if(syntaxPartisanerButton->isChecked())
     {
-        syntax = new SyntaxPartisaner(mainEdit->document(),
+        syntax = new SyntaxPartisaner(firstEdit->document(),
                         Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
                         Qt::darkGreen,QColor("#00f8a2"));
 
@@ -264,7 +261,7 @@ void MainWindow::setSyntaxHighlight()
     }
     else if(syntaxExpanButton->isChecked())
     {
-        syntax = new SyntaxPartisaner(mainEdit->document(),
+        syntax = new SyntaxPartisaner(firstEdit->document(),
                         QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
                         QColor("#409ffe"),Qt::cyan);
 
@@ -274,12 +271,17 @@ void MainWindow::setSyntaxHighlight()
     }
     else if(noHighlightButton->isChecked())
     {
-        syntax = new SyntaxPartisaner(mainEdit->document());
+        syntax = new SyntaxPartisaner(firstEdit->document());
         syntax = new SyntaxPartisaner(secondEdit->document());
     }
 }
 
-QString MainWindow::getTheme() 
+void Skeleton::setFontEdit() 
+{
+    
+}
+
+QString Skeleton::getTheme() 
 {
     QString currentTheme; 
 
@@ -303,19 +305,15 @@ QString MainWindow::getTheme()
     {
         currentTheme = "transparent";
     }
-    else if(aquaThemeButton->isChecked())
+    else if(bubbleThemeButton->isChecked())
     {
-        currentTheme = "aqua";
-    }
-    else if(macosThemeButton->isChecked())
-    {
-        currentTheme = "macos";
+        currentTheme = "bubble";
     }
 
     return currentTheme;
 }
 
-void MainWindow::setTheme(QString theme,int color) 
+void Skeleton::setTheme(QString theme,int color) 
 {
     auto it = themes.find(theme);
     setStyleSheet(it->second);
@@ -326,7 +324,7 @@ void MainWindow::setTheme(QString theme,int color)
         iconChangeToWhite();
 }
 
-int MainWindow::getThemeIcons() 
+int Skeleton::getThemeIcons() 
 {
     QString th = getTheme();
     int color;
@@ -339,7 +337,7 @@ int MainWindow::getThemeIcons()
     return color;
 }
 
-void MainWindow::setRadionButtonChecked(QString radioButton) 
+void Skeleton::setRadionButtonChecked(QString radioButton) 
 {
     if(radioButton == "default")
         defaultThemeButton->setChecked(true);
@@ -351,19 +349,17 @@ void MainWindow::setRadionButtonChecked(QString radioButton)
         transparentThemeButton->setChecked(true);
     else if(radioButton == "spybot")
         spybotThemeButton->setChecked(true);
-    else if(radioButton == "aqua")
-        aquaThemeButton->setChecked(true);
-    else if(radioButton == "macos")
-        macosThemeButton->setChecked(true);
+    else if(radioButton == "bubble")
+        bubbleThemeButton->setChecked(true);
 }
 
-void MainWindow::zoomTextIn()
+void Skeleton::zoomTextIn()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    if(focusEdit == mainEdit)
+    if(focusEdit == firstEdit)
     {
-        mainEdit->zoomIn();
+        firstEdit->zoomIn();
         ++zoom_first_window;
     }
     else if(focusEdit == secondEdit)
@@ -373,15 +369,15 @@ void MainWindow::zoomTextIn()
     }
 }
 
-void MainWindow::zoomTextOut()
+void Skeleton::zoomTextOut()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    if(focusEdit == mainEdit)
+    if(focusEdit == firstEdit)
     {
         if(zoom_first_window >= 0)
         {
-            mainEdit->zoomOut();
+            firstEdit->zoomOut();
             --zoom_first_window;
         }
     }
@@ -395,7 +391,7 @@ void MainWindow::zoomTextOut()
     }
 }
 
-void MainWindow::splitDisplay()
+void Skeleton::splitDisplay()
 {
     if(secondEdit->isHidden())
     {
@@ -405,9 +401,8 @@ void MainWindow::splitDisplay()
         secondEdit->hide();
 }
 
-void MainWindow::clear()
+void Skeleton::clear()
 {
-
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
     
     if(not focusEdit->document()->isEmpty())
@@ -422,41 +417,41 @@ void MainWindow::clear()
     }
 }
 
-void MainWindow::goToSettings()
+void Skeleton::goToSettings()
 {
     if(stackedWindows->currentIndex() == 0)
     {
-        disconnect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
-        disconnect(newFileAction, &QAction::triggered, this, &MainWindow::newFile);
-        disconnect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
-        disconnect(saveFileAction, &QAction::triggered, this, &MainWindow::saveFile);
-        disconnect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
-        disconnect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
-        disconnect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
-        disconnect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
-        disconnect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
-        disconnect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
+        disconnect(clearDisplayAction, &QAction::triggered, this, &Skeleton::clear);
+        disconnect(newFileAction, &QAction::triggered, this, &Skeleton::newFile);
+        disconnect(openFileAction, &QAction::triggered, this, &Skeleton::openFile);
+        disconnect(saveFileAction, &QAction::triggered, this, &Skeleton::saveFile);
+        disconnect(zoomInAction, &QAction::triggered, this, &Skeleton::zoomTextIn);
+        disconnect(zoomOutAction, &QAction::triggered, this, &Skeleton::zoomTextOut);
+        disconnect(splitAction, &QAction::triggered, this, &Skeleton::splitDisplay);
+        disconnect(undoAction, &QAction::triggered, this, &Skeleton::undoText);
+        disconnect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
+        disconnect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
         
         stackedWindows->setCurrentIndex(1);
     }
     else
     {
-        connect(clearDisplayAction, &QAction::triggered, this, &MainWindow::clear);
-        connect(newFileAction, &QAction::triggered, this, &MainWindow::newFile);
-        connect(openFileAction, &QAction::triggered, this, &MainWindow::openFile);
-        connect(saveFileAction, &QAction::triggered, this, &MainWindow::saveFile);
-        connect(zoomInAction, &QAction::triggered, this, &MainWindow::zoomTextIn);
-        connect(zoomOutAction, &QAction::triggered, this, &MainWindow::zoomTextOut);
-        connect(splitAction, &QAction::triggered, this, &MainWindow::splitDisplay);
-        connect(undoAction, &QAction::triggered, this, &MainWindow::undoText);
-        connect(redoAction, &QAction::triggered, this, &MainWindow::redoText);
-        connect(pdfAction, &QAction::triggered, this, &MainWindow::saveToPdf);
+        connect(clearDisplayAction, &QAction::triggered, this, &Skeleton::clear);
+        connect(newFileAction, &QAction::triggered, this, &Skeleton::newFile);
+        connect(openFileAction, &QAction::triggered, this, &Skeleton::openFile);
+        connect(saveFileAction, &QAction::triggered, this, &Skeleton::saveFile);
+        connect(zoomInAction, &QAction::triggered, this, &Skeleton::zoomTextIn);
+        connect(zoomOutAction, &QAction::triggered, this, &Skeleton::zoomTextOut);
+        connect(splitAction, &QAction::triggered, this, &Skeleton::splitDisplay);
+        connect(undoAction, &QAction::triggered, this, &Skeleton::undoText);
+        connect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
+        connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
         
         stackedWindows->setCurrentIndex(0);
     }
 }
 
-void MainWindow::themeChanging()
+void Skeleton::themeChanging()
 {
     if(defaultThemeButton->isChecked())
     {
@@ -478,29 +473,25 @@ void MainWindow::themeChanging()
     {
         setTheme("transparent",WHITE_ICONS);
     }
-    else if(aquaThemeButton->isChecked())
+    else if(bubbleThemeButton->isChecked())
     {
-        setTheme("aqua",BLACK_ICONS);
-    }
-    else if(macosThemeButton->isChecked())
-    {
-        setTheme("macos",BLACK_ICONS);
+        setTheme("bubble",BLACK_ICONS);
     }
 }
 
-void MainWindow::undoText()
+void Skeleton::undoText()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
     focusEdit->undo();
 }
 
-void MainWindow::redoText()
+void Skeleton::redoText()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
     focusEdit->redo();
 }
 
-void MainWindow::loadIcons()
+void Skeleton::loadIcons()
 {
     /* -------load black icons for light themes in Tool bar------ */
     newPix.first.load(":/file.svg");
@@ -531,9 +522,10 @@ void MainWindow::loadIcons()
 
 /* ---------------------------------------------------------------------------------- */
 
-void MainWindow::loadSettings() 
+void Skeleton::loadSettings() 
 {
     setGeometry(settings->value("geometry",QRect(1000,700,1000,500)).toRect());
+
     if(not settings->value("theme").toString().isEmpty()){
         setTheme(settings->value("theme").toString(),settings->value("themeIcons").toInt());
         setRadionButtonChecked(settings->value("theme").toString());
@@ -543,7 +535,7 @@ void MainWindow::loadSettings()
     }
 }
 
-void MainWindow::saveSettings() 
+void Skeleton::saveSettings() 
 {
     settings->setValue("geometry",geometry());
     settings->setValue("theme",getTheme());
@@ -552,7 +544,7 @@ void MainWindow::saveSettings()
 
 /* ---------------------------------------------------------------------------------- */
 
-void MainWindow::iconChangeToBlack()
+void Skeleton::iconChangeToBlack()
 {
     newFileAction->setIcon(newPix.first);
     openFileAction->setIcon(openPix.first);
@@ -567,7 +559,7 @@ void MainWindow::iconChangeToBlack()
     pdfAction->setIcon(pdfPix.first);
 }
 
-void MainWindow::iconChangeToWhite()
+void Skeleton::iconChangeToWhite()
 {
     newFileAction->setIcon(newPix.second);
     openFileAction->setIcon(openPix.second);
@@ -582,7 +574,7 @@ void MainWindow::iconChangeToWhite()
     pdfAction->setIcon(pdfPix.second);
 }
 
-void MainWindow::loadThemes()
+void Skeleton::loadThemes()
 {
     QFile styleSheetFile;
     std::vector<QString> styleSheetFilenames = {
@@ -590,12 +582,11 @@ void MainWindow::loadThemes()
         ":/black.qss",
         ":/white.qss",
         ":/SpyBot.qss",
-        ":/Aqua.qss",
-        ":/MacOS.qss",
+        ":/bubble.qss",
         ":/transparent.qss"};
 
     std::vector<QString> themeNames = {
-        "default", "black", "white", "spybot", "aqua", "macos", "transparent"};
+        "default", "black", "white", "spybot","bubble", "transparent"};
 
     for(size_t var = 0; var < styleSheetFilenames.size(); var++)
     {

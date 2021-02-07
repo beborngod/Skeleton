@@ -6,7 +6,7 @@ SyntaxPartisaner::SyntaxPartisaner(QTextDocument *parent,QColor keywordColor,
 {
     HighlightingRule rule;
 
-    keywordFormat.setForeground(keywordColor);/* Qt::cyan */
+    keywordFormat.setForeground(keywordColor);
     keywordFormat.setFontWeight(QFont::Bold);
     QStringList keywordPatterns;
     keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
@@ -30,25 +30,25 @@ SyntaxPartisaner::SyntaxPartisaner(QTextDocument *parent,QColor keywordColor,
     }
 
     classFormat.setFontWeight(QFont::Bold);
-    classFormat.setForeground(classColor);/* QBrush(QColor("#e500f8")) */
+    classFormat.setForeground(classColor);
     rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
     rule.format = classFormat;
     highlightingRules.append(rule);
 
-    singleLineCommentFormat.setForeground(singleCommentColor);/* Qt::darkGray  */
+    singleLineCommentFormat.setForeground(singleCommentColor);
     rule.pattern = QRegExp("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    multiLineCommentFormat.setForeground(multiCommentColor);/* Qt::darkGray */
+    multiLineCommentFormat.setForeground(multiCommentColor);
 
-    quotationFormat.setForeground(quotationColor);/* Qt::darkGreen */
+    quotationFormat.setForeground(quotationColor);
     rule.pattern = QRegExp("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     functionFormat.setFontItalic(true);
-    functionFormat.setForeground(funcColor);/* QBrush(QColor("#00f8a2")) */
+    functionFormat.setForeground(funcColor);
     rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);

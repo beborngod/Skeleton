@@ -35,8 +35,8 @@ include_directories(/usr/include/qt5/QtGui)
 
 set(PROJECT_SOURCES
         main.cxx
-        MainWindow.cxx
-        MainWindow.h
+        Skeleton.cxx
+        Skeleton.h
         SyntaxPartisaner.cxx
         SyntaxPartisaner.h
 )

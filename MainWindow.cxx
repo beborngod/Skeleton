@@ -25,7 +25,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     splitter = new QSplitter(Qt::Horizontal, this);
     mainEdit = new QTextEdit(this);
+    mainEdit->setTabStopDistance(30);
     secondEdit = new QTextEdit(this);
+    secondEdit->setTabStopDistance(30);
 
     splitter->addWidget(mainEdit);
     splitter->addWidget(secondEdit);
@@ -337,6 +339,24 @@ int MainWindow::getThemeIcons()
     return color;
 }
 
+void MainWindow::setRadionButtonChecked(QString radioButton) 
+{
+    if(radioButton == "default")
+        defaultThemeButton->setChecked(true);
+    else if(radioButton == "black")
+        blackThemeButton->setChecked(true);
+    else if(radioButton == "white")
+        whiteThemeButton->setChecked(true);
+    else if(radioButton == "transparent")
+        transparentThemeButton->setChecked(true);
+    else if(radioButton == "spybot")
+        spybotThemeButton->setChecked(true);
+    else if(radioButton == "aqua")
+        aquaThemeButton->setChecked(true);
+    else if(radioButton == "macos")
+        macosThemeButton->setChecked(true);
+}
+
 void MainWindow::zoomTextIn()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
@@ -509,10 +529,18 @@ void MainWindow::loadIcons()
     pdfPix.second.load(":/document_white.png");
 }
 
+/* ---------------------------------------------------------------------------------- */
+
 void MainWindow::loadSettings() 
 {
     setGeometry(settings->value("geometry",QRect(1000,700,1000,500)).toRect());
-    setTheme(settings->value("theme").toString(),settings->value("themeIcons").toInt());
+    if(not settings->value("theme").toString().isEmpty()){
+        setTheme(settings->value("theme").toString(),settings->value("themeIcons").toInt());
+        setRadionButtonChecked(settings->value("theme").toString());
+    }else{
+        setTheme();
+        setRadionButtonChecked("default");
+    }
 }
 
 void MainWindow::saveSettings() 
@@ -521,6 +549,8 @@ void MainWindow::saveSettings()
     settings->setValue("theme",getTheme());
     settings->setValue("themeIcons",getThemeIcons());
 }
+
+/* ---------------------------------------------------------------------------------- */
 
 void MainWindow::iconChangeToBlack()
 {

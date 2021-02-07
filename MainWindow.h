@@ -84,6 +84,7 @@ private:
     void setTheme(QString theme = "default",int color = WHITE_ICONS);
     int getThemeIcons();
     void getHighlight();
+    void setRadionButtonChecked(QString radioButton);
     void iconChangeToBlack();
     void iconChangeToWhite();
     void loadThemes();

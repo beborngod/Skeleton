@@ -407,38 +407,14 @@ void Skeleton::zoomTextIn()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    if(focusEdit == firstEdit)
-    {
-        firstEdit->zoomIn();
-        ++zoom_first_window;
-    }
-    else if(focusEdit == secondEdit)
-    {
-        secondEdit->zoomIn();
-        ++zoom_second_window;
-    }
+    focusEdit->zoomIn();
 }
 
 void Skeleton::zoomTextOut()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    if(focusEdit == firstEdit)
-    {
-        if(zoom_first_window >= -3)
-        {
-            firstEdit->zoomOut();
-            --zoom_first_window;
-        }
-    }
-    else if(focusEdit == secondEdit)
-    {
-        if(zoom_second_window >= -3)
-        {
-            secondEdit->zoomOut();
-            --zoom_second_window;
-        }
-    }
+    focusEdit->zoomOut();
 }
 
 void Skeleton::splitDisplay()
@@ -599,6 +575,20 @@ void Skeleton::saveSettings()
     settings->setValue("themeIcons",getThemeIcons());
     settings->setValue("font",editFont.toString());
     settings->setValue("highlight",getHighlight());
+}
+
+void Skeleton::wheelEvent(QWheelEvent *event) 
+{
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+    if ( QApplication::keyboardModifiers () == Qt::ControlModifier)
+     {
+        if (event->delta() > 0) {
+            focusEdit->zoomIn();
+        } else {
+            focusEdit->zoomOut();
+        }
+     }
 }
 
 /* ---------------------------------------------------------------------------------- */

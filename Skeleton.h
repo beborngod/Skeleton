@@ -99,4 +99,6 @@ private:
     void loadIcons();
     void loadSettings();
     void saveSettings();
+
+    void wheelEvent(QWheelEvent *event) override;
 };

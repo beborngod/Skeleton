@@ -577,11 +577,13 @@ void Skeleton::saveSettings()
     settings->setValue("highlight",getHighlight());
 }
 
+/* ---------------------------------------------------------------------------------- */
+
 void Skeleton::wheelEvent(QWheelEvent *event) 
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    if ( QApplication::keyboardModifiers () == Qt::ControlModifier)
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
      {
         if (event->delta() > 0) {
             focusEdit->zoomIn();
@@ -590,8 +592,6 @@ void Skeleton::wheelEvent(QWheelEvent *event)
         }
      }
 }
-
-/* ---------------------------------------------------------------------------------- */
 
 void Skeleton::iconChangeToBlack()
 {

@@ -61,6 +61,10 @@ class Skeleton final : public QMainWindow
 
     QSettings *settings;
 
+    QFont editFont;
+    QLineEdit *fontLineEdit;
+    QPushButton *setFontButton;
+
     enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 };
 public:
     explicit Skeleton(QWidget *parent = nullptr);

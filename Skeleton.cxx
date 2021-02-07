@@ -5,6 +5,8 @@ static int zoom_second_window = 0;
 
 Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
 {
+    editFont.setFamily("Source Code Pro");
+    
     qApp->setOrganizationName("Partisaner");
     qApp->setApplicationName("Skeleton");
 
@@ -26,9 +28,13 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     splitter = new QSplitter(Qt::Horizontal, this);
     firstEdit = new QTextEdit(this);
     firstEdit->setTabStopDistance(30);
+    
 
     secondEdit = new QTextEdit(this);
     secondEdit->setTabStopDistance(30);
+
+    firstEdit->setFont(editFont);
+    secondEdit->setFont(editFont);
 
     splitter->addWidget(firstEdit);
     splitter->addWidget(secondEdit);
@@ -75,7 +81,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
 
     /* ---------themes in settings ---------*/
-    themesGroupBox = new QGroupBox("        Themes");
+    themesGroupBox = new QGroupBox("\t\tThemes");
 
     defaultThemeButton = new QRadioButton("Default", this);
     transparentThemeButton = new QRadioButton("Transparent", this);
@@ -111,15 +117,32 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
     vboxLayoutSyntax->addWidget(syntaxExpanButton);
     vboxLayoutSyntax->addWidget(noHighlightButton);
-    vboxLayoutSyntax->addStretch(1);
 
-    auto syntaxGroupBox = new QGroupBox("       Syntax Highlighter for C++:");
+    auto syntaxGroupBox = new QGroupBox("\t\tSyntax Highlighter for C++:");
     syntaxGroupBox->setLayout(vboxLayoutSyntax);
 
+    /* ---------Font settings------------------ */
+    auto fontGroupBox = new QGroupBox("\t\tFont");
+    auto hboxFontLayout = new QHBoxLayout();
+    fontLineEdit = new QLineEdit();
+    fontLineEdit->setReadOnly(true);
+    fontLineEdit->setMaximumWidth(300);
+
+    setFontButton = new QPushButton("set");
+    setFontButton->setFixedWidth(70);
+    connect(setFontButton, &QPushButton::pressed,this,&Skeleton::setFontEdit);
+
+    hboxFontLayout->addWidget(fontLineEdit);
+    hboxFontLayout->addWidget(setFontButton);
+    hboxFontLayout->addStretch(1);
+
+    fontGroupBox->setLayout(hboxFontLayout);
+    /* ------------Settings layout----------- */
     auto vboxSetting = new QVBoxLayout();
     vboxSetting->addWidget(themesGroupBox);
     vboxSetting->addWidget(syntaxGroupBox);
-
+    vboxSetting->addWidget(fontGroupBox);
+    vboxSetting->addStretch(1);
 
     auto settingsGroupBox = new QGroupBox("Settings");
     settingsGroupBox->setLayout(vboxSetting);
@@ -278,7 +301,25 @@ void Skeleton::setSyntaxHighlight()
 
 void Skeleton::setFontEdit() 
 {
-    
+    bool OK;
+    int comma;
+    QString str;
+    str.reserve(30);
+    editFont = QFontDialog::getFont(&OK);
+    if(OK){
+        firstEdit->setFont(editFont);
+        secondEdit->setFont(editFont);
+    }
+    for (auto it = editFont.toString().begin(); comma!=2; ++it)
+    {
+        if(*it == ",")
+            ++comma;
+        if(comma!=2)
+        str.append(*it);
+    }
+    zoom_first_window = editFont.pointSize();
+    zoom_second_window = editFont.pointSize();
+    fontLineEdit->setText(str);
 }
 
 QString Skeleton::getTheme() 
@@ -375,7 +416,7 @@ void Skeleton::zoomTextOut()
 
     if(focusEdit == firstEdit)
     {
-        if(zoom_first_window >= 0)
+        if(zoom_first_window >= -3)
         {
             firstEdit->zoomOut();
             --zoom_first_window;
@@ -383,7 +424,7 @@ void Skeleton::zoomTextOut()
     }
     else if(focusEdit == secondEdit)
     {
-        if(zoom_second_window >= 0)
+        if(zoom_second_window >= -3)
         {
             secondEdit->zoomOut();
             --zoom_second_window;

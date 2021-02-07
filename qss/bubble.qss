@@ -5,11 +5,12 @@
  * Last updated: 25/12/2020, 23:10.
  * Available at: https://github.com/GTRONICK/QSS/blob/master/bubble.qss
  */
-QSkeleton {
+QMainWindow {
     background-color:#ececec;
 }
 QGroupBox{
-    color: #000000;
+    color:#000000;
+    background-color:#ececec;
 }
 QToolButton{
     height:25px;
@@ -17,6 +18,7 @@ QToolButton{
 QToolBar{
     background-color: #ececec;
 }
+
 QPushButton, QToolButton, QCommandLinkButton{
     padding: 0 5px 0 5px;
     border-style: solid;
@@ -428,4 +430,13 @@ QScrollBar::add-line:vertical:pressed, QScrollBar::add-line:horizontal:pressed, 
 }
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal, QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
+}
+/* QRadioButton{
+    color : #ffffff;
+}    
+QLabel{
+    color:#ffffff
+} */
+QTextEdit{
+    background-color:#ececec;
 }

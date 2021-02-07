@@ -17,3 +17,6 @@ QSplitter{
 QToolButton{
     height:25px;
 }
+QRadioButton{
+    color: rgb(255,255,255);
+}

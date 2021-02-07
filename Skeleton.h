@@ -65,7 +65,9 @@ class Skeleton final : public QMainWindow
     QLineEdit *fontLineEdit;
     QPushButton *setFontButton;
 
-    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 };
+    bool syntaxThemeSaving = PARTISANER;
+
+    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 ,PARTISANER = 0,EXPAN = 1};
 public:
     explicit Skeleton(QWidget *parent = nullptr);
     ~Skeleton();
@@ -88,7 +90,7 @@ private:
     QString getTheme();
     void setTheme(QString theme = "default",int color = WHITE_ICONS);
     int getThemeIcons();
-    void getHighlight();
+    bool getHighlight();
     void setRadionButtonChecked(QString radioButton);
 
     void iconChangeToBlack();

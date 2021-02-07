@@ -81,7 +81,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
 
     /* ---------themes in settings ---------*/
-    themesGroupBox = new QGroupBox("\t\tThemes");
+    themesGroupBox = new QGroupBox("\t\tThemes:");
 
     defaultThemeButton = new QRadioButton("Default", this);
     transparentThemeButton = new QRadioButton("Transparent", this);
@@ -99,7 +99,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     vboxLayoutThemes->addWidget(spybotThemeButton);
     vboxLayoutThemes->addWidget(bubbleThemeButton);
 
-    auto kvantumLabel = new QLabel("Work only with Kvantum theme:");
+    auto kvantumLabel = new QLabel("Able only with Kvantum theme:");
     vboxLayoutThemes->addWidget(kvantumLabel);
     vboxLayoutThemes->addWidget(transparentThemeButton);
 
@@ -220,10 +220,12 @@ void Skeleton::openFile()
     }
 
     if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
-        if(not syntaxPartisanerButton->isChecked() and not syntaxExpanButton->isChecked()){
-            syntaxPartisanerButton->setChecked(true);   
-            setSyntaxHighlight();
-        }
+        if(syntaxThemeSaving = EXPAN)
+            syntaxExpanButton->setChecked(true);
+        if(syntaxThemeSaving = PARTISANER)
+            syntaxPartisanerButton->setChecked(true); 
+        setSyntaxHighlight();
+
     }
 
     if(not s_text.isEmpty())
@@ -274,6 +276,7 @@ void Skeleton::setSyntaxHighlight()
 {
     if(syntaxPartisanerButton->isChecked())
     {
+        syntaxThemeSaving = false;
         syntax = new SyntaxPartisaner(firstEdit->document(),
                         Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
                         Qt::darkGreen,QColor("#00f8a2"));
@@ -284,6 +287,7 @@ void Skeleton::setSyntaxHighlight()
     }
     else if(syntaxExpanButton->isChecked())
     {
+        syntaxThemeSaving = true;
         syntax = new SyntaxPartisaner(firstEdit->document(),
                         QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
                         QColor("#409ffe"),Qt::cyan);
@@ -376,6 +380,11 @@ int Skeleton::getThemeIcons()
         color = 1;
 
     return color;
+}
+
+bool Skeleton::getHighlight() 
+{
+    return syntaxThemeSaving;
 }
 
 void Skeleton::setRadionButtonChecked(QString radioButton) 
@@ -579,6 +588,8 @@ void Skeleton::loadSettings()
     zoom_first_window = font.pointSize();
     zoom_second_window  = font.pointSize();
     firstEdit->setFont(font);
+
+    syntaxThemeSaving = settings->value("highlight").toBool();
 }
 
 void Skeleton::saveSettings() 
@@ -587,6 +598,7 @@ void Skeleton::saveSettings()
     settings->setValue("theme",getTheme());
     settings->setValue("themeIcons",getThemeIcons());
     settings->setValue("font",editFont.toString());
+    settings->setValue("highlight",getHighlight());
 }
 
 /* ---------------------------------------------------------------------------------- */

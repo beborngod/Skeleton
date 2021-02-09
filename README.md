@@ -8,7 +8,7 @@
 - Two variantes of cxx syntax
 - Font changing
 - PDF writer
-![](images/create_pdf.png)
+![](images/creating_pdf.png)
 
 ## Dependence
 

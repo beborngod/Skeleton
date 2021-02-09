@@ -17,9 +17,13 @@ I working about rpm and deb packages, but now we have only binary
 file that work on Fedora Linux without any dependence. 
 In next release I'll push editor on Snap store and next in rpm/deb.
 
-### Deploying :
+### Deploying and installing:
 
-  cmake --build path/to/build --config Release --target all
+	git clone https://github.com/beborngod/Skeleton
+
+	cd Skeleton
+
+    cmake --build path/to/build --config Release --target all
   
     make
   

@@ -626,22 +626,15 @@ void Skeleton::iconChangeToWhite()
 void Skeleton::loadThemes()
 {
     QFile styleSheetFile;
-    std::vector<QString> styleSheetFilenames = {
-        ":/default.qss",
-        ":/black.qss",
-        ":/white.qss",
-        ":/SpyBot.qss",
-        ":/bubble.qss",
-        ":/transparent.qss"};
 
     std::vector<QString> themeNames = {
         "default", "black", "white", "spybot","bubble", "transparent"};
 
-    for(size_t var = 0; var < styleSheetFilenames.size(); var++)
+    for(const auto &theme: themeNames)
     {
-        styleSheetFile.setFileName(styleSheetFilenames[var]);
+        styleSheetFile.setFileName(":/" + theme + ".qss");
         styleSheetFile.open(QFile::ReadOnly);
-        themes.emplace(themeNames[var], QLatin1String(styleSheetFile.readAll()));
+        themes.emplace(theme, QLatin1String(styleSheetFile.readAll()));
         styleSheetFile.close();
     }
 }

@@ -4,6 +4,7 @@
 #include <QTextCharFormat>
 #include <QTextDocument>
 
+#include <QtPlugin>
 class SyntaxPartisaner : public QSyntaxHighlighter
 {
     Q_OBJECT

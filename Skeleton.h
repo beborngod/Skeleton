@@ -1,8 +1,24 @@
 #include "SyntaxPartisaner.h"
-#include <QtWidgets>
-#include <QtCore>
-#include <QtGui>
+#include <QStackedWidget>
+#include <QApplication>
+#include <QRadioButton>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QFontDialog>
+#include <QFileDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QShortcut>
+#include <QSplitter>
+#include <QTextEdit>
+#include <QGroupBox>
+#include <QSettings>
+#include <QLineEdit>
+#include <QToolBar>
 #include <QPrinter>
+#include <QPixmap>
+#include <QLabel>
 #include <vector>
 #include <map>
 class Skeleton final : public QMainWindow

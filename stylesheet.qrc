@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="SpyBot.qss">qss/SpyBot.qss</file>
+        <file alias="spybot.qss">qss/spybot.qss</file>
         <file alias="white.qss">qss/white.qss</file>
         <file alias="black.qss">qss/black.qss</file>
         <file alias="default.qss">qss/default.qss</file>

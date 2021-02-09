@@ -2,10 +2,13 @@
 
 ## Themes
 - Transparent
+![](images/transparent_theme.png)
 - SpyBot
+![](images/spybot_theme.png)
 - Two variantes of cxx syntax
 - Font changing
 - PDF writer
+![](images/create_pdf.png)
 
 ## Dependence
 

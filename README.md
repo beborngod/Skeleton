@@ -10,14 +10,22 @@
 - PDF writer
 ![](images/creating_pdf.png)
 
-## Dependence
+### Platforms
+- Fedora Linux
+- RHEL
+- Debian
+- Ubuntu
 
-For using this text editor you must have Qt 5.15.2 on your PC.
-I working about rpm and deb packages, but now we have only binary
-file that work on Fedora Linux without any dependence. 
-In next release I'll push editor on Snap store and next in rpm/deb.
+Its avaliable too in other Linux platforms but it wasn't tested.
 
-### Deploying and installing:
+## Installing
+
+    chmod +x InstallerSkeleton.run
+    
+    ./InstallerSkeleton.run
+
+
+### Deploying from Source (not recomended):
 
 	git clone https://github.com/beborngod/Skeleton
 

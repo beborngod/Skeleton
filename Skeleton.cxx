@@ -220,9 +220,9 @@ void Skeleton::openFile()
     }
 
     if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
-        if(syntaxThemeSaving = EXPAN)
+        if(syntaxThemeSaving == EXPAN)
             syntaxExpanButton->setChecked(true);
-        if(syntaxThemeSaving = PARTISANER)
+        if(syntaxThemeSaving == PARTISANER)
             syntaxPartisanerButton->setChecked(true); 
         setSyntaxHighlight();
 
@@ -306,7 +306,7 @@ void Skeleton::setSyntaxHighlight()
 void Skeleton::setFontEdit() 
 {
     bool OK;
-    int comma;
+    int comma = 0;
     QString str;
     str.reserve(30);
     editFont = QFontDialog::getFont(&OK);

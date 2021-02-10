@@ -4,8 +4,7 @@
 #include <QTextCharFormat>
 #include <QTextDocument>
 
-#include <QtPlugin>
-class SyntaxPartisaner : public QSyntaxHighlighter
+class SyntaxPartisaner final: public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
@@ -13,8 +12,9 @@ public:
     QColor classColor,QColor singleCommentColor,QColor multiCommentColor,
     QColor quotationColor,QColor funcColor);
     SyntaxPartisaner(QTextDocument *parent);
+    virtual ~SyntaxPartisaner() = default;
 protected:
-    void highlightBlock(const QString &text) override;
+    virtual void highlightBlock(const QString &text) override;
 
 private:
     struct HighlightingRule

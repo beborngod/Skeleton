@@ -77,7 +77,7 @@ SyntaxPartisaner::SyntaxPartisaner(QTextDocument *parent) : QSyntaxHighlighter(p
 
 void SyntaxPartisaner::highlightBlock(const QString &text)
 {
-    for(const HighlightingRule &rule: highlightingRules) {
+    for(const HighlightingRule &rule: qAsConst(highlightingRules)) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);
         while(index >= 0) {

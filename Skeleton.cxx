@@ -80,87 +80,8 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     connect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
     connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
 
-    /* ---------themes in settings ---------*/
-    themesGroupBox = new QGroupBox("\t\tThemes:");
-
-    defaultThemeButton = new QRadioButton("Default", this);
-    transparentThemeButton = new QRadioButton("Transparent", this);
-    blackThemeButton = new QRadioButton("Black", this);
-    whiteThemeButton = new QRadioButton("White", this);
-    spybotThemeButton = new QRadioButton("SpyBot", this);
-    bubbleThemeButton = new QRadioButton("Bubble", this);
-    defaultThemeButton->setChecked(true);
-
-    /* ------collect theme buttons-------- */
-    auto vboxLayoutThemes = new QVBoxLayout();
-    vboxLayoutThemes->addWidget(defaultThemeButton);
-    vboxLayoutThemes->addWidget(blackThemeButton);
-    vboxLayoutThemes->addWidget(whiteThemeButton);
-    vboxLayoutThemes->addWidget(spybotThemeButton);
-    vboxLayoutThemes->addWidget(bubbleThemeButton);
-
-    auto kvantumLabel = new QLabel("Able only with Kvantum theme:");
-    vboxLayoutThemes->addWidget(kvantumLabel);
-    vboxLayoutThemes->addWidget(transparentThemeButton);
-
-    vboxLayoutThemes->addSpacing(10);
-    themesGroupBox->setLayout(vboxLayoutThemes);
-
-    /* ----------syntax highlighter in settings----------- */
-    
-    syntaxPartisanerButton = new QRadioButton("Partisaner", this);
-    syntaxExpanButton = new QRadioButton("ExPan", this);
-    noHighlightButton = new QRadioButton("No highlight", this);
-    noHighlightButton->setChecked(true);
-
-    auto vboxLayoutSyntax = new QVBoxLayout();
-    vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
-    vboxLayoutSyntax->addWidget(syntaxExpanButton);
-    vboxLayoutSyntax->addWidget(noHighlightButton);
-
-    auto syntaxGroupBox = new QGroupBox("\t\tSyntax Highlighter for C++:");
-    syntaxGroupBox->setLayout(vboxLayoutSyntax);
-
-    /* ---------Font settings------------------ */
-    auto fontGroupBox = new QGroupBox("\t\tFont");
-    auto hboxFontLayout = new QHBoxLayout();
-    fontLineEdit = new QLineEdit();
-    fontLineEdit->setReadOnly(true);
-    fontLineEdit->setMaximumWidth(300);
-
-    setFontButton = new QPushButton("set");
-    setFontButton->setFixedWidth(70);
-    connect(setFontButton, &QPushButton::pressed,this,&Skeleton::setFontEdit);
-
-    hboxFontLayout->addWidget(fontLineEdit);
-    hboxFontLayout->addWidget(setFontButton);
-    hboxFontLayout->addStretch(1);
-
-    fontGroupBox->setLayout(hboxFontLayout);
-    /* ------------Settings layout----------- */
-    auto vboxSetting = new QVBoxLayout();
-    vboxSetting->addWidget(themesGroupBox);
-    vboxSetting->addWidget(syntaxGroupBox);
-    vboxSetting->addWidget(fontGroupBox);
-    vboxSetting->addStretch(1);
-
-    auto settingsGroupBox = new QGroupBox("Settings");
-    settingsGroupBox->setLayout(vboxSetting);
-
-    stackedWindows->addWidget(settingsGroupBox);
-
-    /* ----------connection theme changing in settingd----------- */
-    connect(defaultThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-    connect(whiteThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-    connect(blackThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-    connect(spybotThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-    connect(transparentThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-    connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-
-    /* ----------connection syntax highlighter changing in settingd */
-    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
-    connect(syntaxExpanButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
-    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    /* -----------Settings Panel----------- */
+    settingsPanel();
 
     /* --------Shortcuts-------- */
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
@@ -575,6 +496,91 @@ void Skeleton::saveSettings()
     settings->setValue("themeIcons",getThemeIcons());
     settings->setValue("font",editFont.toString());
     settings->setValue("highlight",getHighlight());
+}
+
+void Skeleton::settingsPanel() 
+{
+    /* ---------themes in settings ---------*/
+    themesGroupBox = new QGroupBox("\t\tThemes:");
+
+    defaultThemeButton = new QRadioButton("Default", this);
+    transparentThemeButton = new QRadioButton("Transparent", this);
+    blackThemeButton = new QRadioButton("Black", this);
+    whiteThemeButton = new QRadioButton("White", this);
+    spybotThemeButton = new QRadioButton("SpyBot", this);
+    bubbleThemeButton = new QRadioButton("Bubble", this);
+    defaultThemeButton->setChecked(true);
+
+    /* ------collect theme buttons-------- */
+    auto vboxLayoutThemes = new QVBoxLayout();
+    vboxLayoutThemes->addWidget(defaultThemeButton);
+    vboxLayoutThemes->addWidget(blackThemeButton);
+    vboxLayoutThemes->addWidget(whiteThemeButton);
+    vboxLayoutThemes->addWidget(spybotThemeButton);
+    vboxLayoutThemes->addWidget(bubbleThemeButton);
+
+    auto kvantumLabel = new QLabel("Able only with Kvantum theme:");
+    vboxLayoutThemes->addWidget(kvantumLabel);
+    vboxLayoutThemes->addWidget(transparentThemeButton);
+
+    vboxLayoutThemes->addSpacing(10);
+    themesGroupBox->setLayout(vboxLayoutThemes);
+
+    /* ----------syntax highlighter in settings----------- */
+    
+    syntaxPartisanerButton = new QRadioButton("Partisaner", this);
+    syntaxExpanButton = new QRadioButton("ExPan", this);
+    noHighlightButton = new QRadioButton("No highlight", this);
+    noHighlightButton->setChecked(true);
+
+    auto vboxLayoutSyntax = new QVBoxLayout();
+    vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
+    vboxLayoutSyntax->addWidget(syntaxExpanButton);
+    vboxLayoutSyntax->addWidget(noHighlightButton);
+
+    auto syntaxGroupBox = new QGroupBox("\t\tSyntax Highlighter for C++:");
+    syntaxGroupBox->setLayout(vboxLayoutSyntax);
+
+    /* ---------Font settings------------------ */
+    auto fontGroupBox = new QGroupBox("\t\tFont");
+    auto hboxFontLayout = new QHBoxLayout();
+    fontLineEdit = new QLineEdit();
+    fontLineEdit->setReadOnly(true);
+    fontLineEdit->setMaximumWidth(300);
+
+    setFontButton = new QPushButton("set");
+    setFontButton->setFixedWidth(70);
+    connect(setFontButton, &QPushButton::pressed,this,&Skeleton::setFontEdit);
+
+    hboxFontLayout->addWidget(fontLineEdit);
+    hboxFontLayout->addWidget(setFontButton);
+    hboxFontLayout->addStretch(1);
+
+    fontGroupBox->setLayout(hboxFontLayout);
+    /* ------------Settings layout----------- */
+    auto vboxSetting = new QVBoxLayout();
+    vboxSetting->addWidget(themesGroupBox);
+    vboxSetting->addWidget(syntaxGroupBox);
+    vboxSetting->addWidget(fontGroupBox);
+    vboxSetting->addStretch(1);
+
+    auto settingsGroupBox = new QGroupBox("Settings");
+    settingsGroupBox->setLayout(vboxSetting);
+
+    stackedWindows->addWidget(settingsGroupBox);
+
+    /* ----------connection theme changing in settingd----------- */
+    connect(defaultThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(whiteThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(blackThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(spybotThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(transparentThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+    connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
+
+    /* ----------connection syntax highlighter changing in settingd */
+    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    connect(syntaxExpanButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
 }
 
 /* ---------------------------------------------------------------------------------- */

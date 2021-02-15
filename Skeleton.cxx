@@ -1,7 +1,7 @@
 #include "Skeleton.h"
 
-static int zoom_first_window = 0;
-static int zoom_second_window = 0;
+static int zoomFirstWindow = 0;
+static int zoomSecondWindow = 0;
 
 Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
 {
@@ -26,19 +26,36 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
     splitter = new QSplitter(Qt::Horizontal, this);
+    
     firstEdit = new QTextEdit(this);
     firstEdit->setTabStopDistance(30);
     
-
     secondEdit = new QTextEdit(this);
     secondEdit->setTabStopDistance(30);
 
     firstEdit->setFont(editFont);
     secondEdit->setFont(editFont);
 
-    splitter->addWidget(firstEdit);
-    splitter->addWidget(secondEdit);
-    secondEdit->hide();
+    firstEditList.push_back(firstEdit);
+    secondEditList.push_back(secondEdit);
+
+    /* -------Tabs--------- */
+    firstTab = new QTabWidget(this);
+    firstTab->setTabsClosable(true);
+    firstTab->setMovable(true);
+    firstTab->addTab(firstEdit,"Untilited");
+
+    secondTab = new QTabWidget(this);
+    secondTab->setTabsClosable(true);
+    secondTab->setMovable(true);
+    secondTab->addTab(secondEdit,"Untilited");
+
+    connect(firstTab,&QTabWidget::tabCloseRequested,this,&Skeleton::closeFirstTab);
+    connect(secondTab,&QTabWidget::tabCloseRequested,this,&Skeleton::closeSecondTab);
+
+    splitter->addWidget(firstTab);
+    splitter->addWidget(secondTab);
+    secondTab->hide();
 
     stackedWindows = new QStackedWidget(this);
 
@@ -90,7 +107,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     /* ----------setting Default theme----------- */
     //setTheme("default",WHITE_ICONS);
     
-    setSyntaxHighlight();
+    //setSyntaxHighlight();
 
     /* ---------load settings----------- */
     loadSettings();
@@ -135,30 +152,44 @@ void Skeleton::openFile()
     QString c_text = QFileDialog::getOpenFileName();
     QString s_text = c_text.simplified();
     
-    QString tmp;
+    /* QString tmp;
     for(auto var = s_text.end()-1; *var != "."; --var){
         tmp.push_front(*var);
+    } */
+
+    QString fileName;
+    for(auto var = s_text.end()-1; *var != "/"; --var){
+        fileName.push_front(*var);
     }
 
-    if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
-        if(syntaxThemeSaving == EXPAN)
-            syntaxExpanButton->setChecked(true);
-        if(syntaxThemeSaving == PARTISANER)
-            syntaxPartisanerButton->setChecked(true); 
-        setSyntaxHighlight();
-
-    }
-
+    QTextEdit *newEdit;
     if(not s_text.isEmpty())
     {
+        newEdit = new QTextEdit(this);
         QFile file(s_text);
         if (file.open(QIODevice::ReadOnly))
         {
-            focusEdit->clear();
-            focusEdit->append(QString(file.readAll()));
+            if(firstTab->currentWidget() == focusEdit){
+                firstTab->addTab(newEdit,fileName);
+                firstEditList.push_back(newEdit);
+                firstTab->setCurrentWidget(newEdit);
+            }
+            else if(secondTab->currentWidget() == focusEdit){
+                secondTab->addTab(newEdit,fileName);
+                secondEditList.push_back(newEdit);
+                secondTab->setCurrentWidget(newEdit);
+            }
+            
+            newEdit->append(QString(file.readAll()));
         }
         file.close();
     }
+    /* if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
+        if(syntaxThemeSaving == EXPAN)
+            doSyntax(newEdit->document(),EXPAN);
+        if(syntaxThemeSaving == PARTISANER)
+            doSyntax(newEdit->document(),PARTISANER); 
+    } */
 }
 
 void Skeleton::saveFile()
@@ -193,36 +224,59 @@ void Skeleton::saveToPdf()
     }
 }
 
-void Skeleton::setSyntaxHighlight() 
+/* void Skeleton::setSyntaxHighlight() 
 {
     if(syntaxPartisanerButton->isChecked())
     {
         syntaxThemeSaving = false;
-        syntax = new SyntaxPartisaner(firstEdit->document(),
-                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
-                        Qt::darkGreen,QColor("#00f8a2"));
+        
+        QThread *firstThreadPatrisaner = new QThread(this);
+        connect(firstThreadPatrisaner,&QThread::started,this,[&](){
+            setSyntax(firstEditList,PARTISANER);
+        });
+        firstThreadPatrisaner->start();
+        
+        QThread *secondThreadPatrisaner = new QThread(this);
+        secondThreadPatrisaner->start();
+        connect(secondThreadPatrisaner,&QThread::started,this,[&](){
+            setSyntax(secondEditList,PARTISANER);
+        });
+        secondThreadPatrisaner->start();
 
-        syntax = new SyntaxPartisaner(secondEdit->document(),
-                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
-                        Qt::darkGreen,QColor("#00f8a2"));
     }
     else if(syntaxExpanButton->isChecked())
     {
         syntaxThemeSaving = true;
-        syntax = new SyntaxPartisaner(firstEdit->document(),
-                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
-                        QColor("#409ffe"),Qt::cyan);
+        
+        QThread *firstThreadExpan = new QThread(this);
+        connect(firstThreadExpan,&QThread::started,this,[&](){
+            setSyntax(firstEditList,EXPAN);
+        });
+        firstThreadExpan->start();
 
-        syntax = new SyntaxPartisaner(secondEdit->document(),
-                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
-                        QColor("#409ffe"),Qt::cyan);
+        QThread *secondThreadExpan = new QThread(this);
+        connect(secondThreadExpan,&QThread::started,this,[&](){
+            setSyntax(secondEditList,EXPAN);
+        });
+        secondThreadExpan->start();
     }
     else if(noHighlightButton->isChecked())
     {
-        syntax = new SyntaxPartisaner(firstEdit->document());
-        syntax = new SyntaxPartisaner(secondEdit->document());
+        QThread *firstThreadWhite = new QThread(this);
+        connect(firstThreadWhite,&QThread::started,this,[&](){
+            for (auto &item : firstEditList)
+                syntax = new SyntaxPartisaner(item->document());
+        });
+        firstThreadWhite->start();
+
+        QThread *secondThreadWhite = new QThread(this);
+        connect(secondThreadWhite,&QThread::started,this,[&](){
+            for (auto &item : secondEditList)
+                syntax = new SyntaxPartisaner(item->document());
+        });
+        secondThreadWhite->start();
     }
-}
+} */
 
 void Skeleton::setFontEdit() 
 {
@@ -242,9 +296,23 @@ void Skeleton::setFontEdit()
         if(comma!=2)
         str.append(*it);
     }
-    zoom_first_window = editFont.pointSize();
-    zoom_second_window = editFont.pointSize();
+    zoomFirstWindow = editFont.pointSize();
+    zoomSecondWindow = editFont.pointSize();
     fontLineEdit->setText(str);
+}
+
+void Skeleton::closeFirstTab(int index) 
+{
+    firstTab->removeTab(index);
+    firstEditList.at(index)->deleteLater();
+    firstEditList.removeAt(index);
+}
+
+void Skeleton::closeSecondTab(int index) 
+{
+    secondTab->removeTab(index);
+    secondEditList.at(index)->deleteLater();
+    secondEditList.removeAt(index);
 }
 
 QString Skeleton::getTheme() 
@@ -303,10 +371,10 @@ int Skeleton::getThemeIcons()
     return color;
 }
 
-bool Skeleton::getHighlight() 
+/* bool Skeleton::getHighlight() 
 {
     return syntaxThemeSaving;
-}
+} */
 
 void Skeleton::setRadionButtonChecked(QString radioButton) 
 {
@@ -324,6 +392,27 @@ void Skeleton::setRadionButtonChecked(QString radioButton)
         bubbleThemeButton->setChecked(true);
 }
 
+/* void Skeleton::doSyntax(QTextDocument *document,int SYNTAX) 
+{
+    if(SYNTAX == PARTISANER){
+        syntax = new SyntaxPartisaner(document,
+                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
+                        Qt::darkGreen,QColor("#00f8a2"));
+    }
+    else if(SYNTAX == EXPAN){
+        syntax = new SyntaxPartisaner(document,
+                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
+                        QColor("#409ffe"),Qt::cyan);
+    }
+}
+
+void Skeleton::setSyntax(QVector<QTextEdit *> textEditVecor,int SYNTAX) 
+{
+    for(auto const &item : textEditVecor){
+            doSyntax(item->document(),SYNTAX);
+        }
+} */
+
 void Skeleton::zoomTextIn()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
@@ -340,12 +429,12 @@ void Skeleton::zoomTextOut()
 
 void Skeleton::splitDisplay()
 {
-    if(secondEdit->isHidden())
+    if(secondTab->isHidden())
     {
-        secondEdit->show();
+        secondTab->show();
     }
     else
-        secondEdit->hide();
+        secondTab->hide();
 }
 
 void Skeleton::clear()
@@ -482,11 +571,11 @@ void Skeleton::loadSettings()
     }
 
     QFont font(settings->value("font").toString());
-    zoom_first_window = font.pointSize();
-    zoom_second_window  = font.pointSize();
+    zoomFirstWindow = font.pointSize();
+    zoomSecondWindow  = font.pointSize();
     firstEdit->setFont(font);
 
-    syntaxThemeSaving = settings->value("highlight").toBool();
+    //syntaxThemeSaving = settings->value("highlight").toBool();
 }
 
 void Skeleton::saveSettings() 
@@ -495,7 +584,7 @@ void Skeleton::saveSettings()
     settings->setValue("theme",getTheme());
     settings->setValue("themeIcons",getThemeIcons());
     settings->setValue("font",editFont.toString());
-    settings->setValue("highlight",getHighlight());
+    //settings->setValue("highlight",getHighlight());
 }
 
 void Skeleton::settingsPanel() 
@@ -528,7 +617,7 @@ void Skeleton::settingsPanel()
 
     /* ----------syntax highlighter in settings----------- */
     
-    syntaxPartisanerButton = new QRadioButton("Partisaner", this);
+    /* syntaxPartisanerButton = new QRadioButton("Partisaner", this);
     syntaxExpanButton = new QRadioButton("ExPan", this);
     noHighlightButton = new QRadioButton("No highlight", this);
     noHighlightButton->setChecked(true);
@@ -539,7 +628,7 @@ void Skeleton::settingsPanel()
     vboxLayoutSyntax->addWidget(noHighlightButton);
 
     auto syntaxGroupBox = new QGroupBox("\t\tSyntax Highlighter for C++:");
-    syntaxGroupBox->setLayout(vboxLayoutSyntax);
+    syntaxGroupBox->setLayout(vboxLayoutSyntax); */
 
     /* ---------Font settings------------------ */
     auto fontGroupBox = new QGroupBox("\t\tFont");
@@ -560,7 +649,7 @@ void Skeleton::settingsPanel()
     /* ------------Settings layout----------- */
     auto vboxSetting = new QVBoxLayout();
     vboxSetting->addWidget(themesGroupBox);
-    vboxSetting->addWidget(syntaxGroupBox);
+    //vboxSetting->addWidget(syntaxGroupBox);
     vboxSetting->addWidget(fontGroupBox);
     vboxSetting->addStretch(1);
 
@@ -578,9 +667,9 @@ void Skeleton::settingsPanel()
     connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
 
     /* ----------connection syntax highlighter changing in settingd */
-    connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    /* connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
     connect(syntaxExpanButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
-    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
+    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight); */
 }
 
 /* ---------------------------------------------------------------------------------- */

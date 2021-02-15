@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTabWidget>
 #include <QShortcut>
 #include <QSplitter>
 #include <QTextEdit>
@@ -18,8 +19,11 @@
 #include <QToolBar>
 #include <QPrinter>
 #include <QPixmap>
+#include <QThread>
+#include <thread>
 #include <QLabel>
 #include <vector>
+#include <list>
 #include <map>
 class Skeleton final : public QMainWindow
 {
@@ -67,13 +71,16 @@ class Skeleton final : public QMainWindow
     QRadioButton *bubbleThemeButton;
     QRadioButton *transparentThemeButton;
 
-    QRadioButton *syntaxPartisanerButton;
+    /* QRadioButton *syntaxPartisanerButton;
     QRadioButton *syntaxExpanButton;
-    QRadioButton *noHighlightButton;
+    QRadioButton *noHighlightButton; */
 
     std::map<QString,QString>themes;
+    
+    QList<QTextEdit *> firstEditList;
+    QList<QTextEdit *> secondEditList;
 
-    SyntaxPartisaner *syntax;
+    /* SyntaxPartisaner *syntax; */
 
     QSettings *settings;
 
@@ -81,9 +88,12 @@ class Skeleton final : public QMainWindow
     QLineEdit *fontLineEdit;
     QPushButton *setFontButton;
 
-    bool syntaxThemeSaving = PARTISANER;
+    /* bool syntaxThemeSaving = PARTISANER; */
 
-    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2 ,PARTISANER = 0,EXPAN = 1};
+    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2/*  ,PARTISANER = 0,EXPAN = 1 */};
+
+    QTabWidget *firstTab;
+    QTabWidget *secondTab;
 public:
     explicit Skeleton(QWidget *parent = nullptr);
     ~Skeleton();
@@ -100,15 +110,18 @@ protected slots:
     void undoText();
     void redoText();
     void saveToPdf();
-    void setSyntaxHighlight();
+    //void setSyntaxHighlight();
     void setFontEdit();
+    void closeFirstTab(int index);
+    void closeSecondTab(int index);
 private:
     QString getTheme();
     void setTheme(QString theme = "default",int color = WHITE_ICONS);
     int getThemeIcons();
-    bool getHighlight();
+    //bool getHighlight();
     void setRadionButtonChecked(QString radioButton);
-
+    //void doSyntax(QTextDocument *document,int SYNTAX);
+    //void setSyntax(QVector<QTextEdit *> textEditVecor,int SYNTAX);
     void iconChangeToBlack();
     void iconChangeToWhite();
     void loadThemes();

@@ -11,6 +11,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -pthread -lm")
+
 #set(EXECUTABLE_OUTPUT_PATH  ${PROJECT_SOURCE_DIR}/bin/)
 
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
@@ -37,8 +42,8 @@ set(PROJECT_SOURCES
         main.cxx
         Skeleton.cxx
         Skeleton.h
-        SyntaxPartisaner.cxx
-        SyntaxPartisaner.h
+        #SyntaxPartisaner.cxx
+        #SyntaxPartisaner.h
 )
 
 qt5_add_resources(PROJECT_SOURCES images.qrc stylesheet.qrc)

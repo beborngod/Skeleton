@@ -1,7 +1,7 @@
-#include "SyntaxPartisaner.h"
 #include <QStackedWidget>
 #include <QApplication>
 #include <QRadioButton>
+#include <QWheelEvent>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QMessageBox>
@@ -19,8 +19,6 @@
 #include <QToolBar>
 #include <QPrinter>
 #include <QPixmap>
-#include <QThread>
-#include <thread>
 #include <QLabel>
 #include <vector>
 #include <list>

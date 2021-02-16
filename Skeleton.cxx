@@ -1,12 +1,14 @@
 #include "Skeleton.h"
 
+#include <iostream>
+
 static int zoomFirstWindow = 0;
 static int zoomSecondWindow = 0;
 
 Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
 {
     editFont.setFamily("Source Code Pro");
-    
+
     qApp->setOrganizationName("Partisaner");
     qApp->setApplicationName("Skeleton");
 
@@ -26,10 +28,10 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
     splitter = new QSplitter(Qt::Horizontal, this);
-    
+
     firstEdit = new QTextEdit(this);
     firstEdit->setTabStopDistance(30);
-    
+
     secondEdit = new QTextEdit(this);
     secondEdit->setTabStopDistance(30);
 
@@ -43,15 +45,15 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     firstTab = new QTabWidget(this);
     firstTab->setTabsClosable(true);
     firstTab->setMovable(true);
-    firstTab->addTab(firstEdit,"Untilited");
+    firstTab->addTab(firstEdit, "Untilited");
 
     secondTab = new QTabWidget(this);
     secondTab->setTabsClosable(true);
     secondTab->setMovable(true);
-    secondTab->addTab(secondEdit,"Untilited");
+    secondTab->addTab(secondEdit, "Untilited");
 
-    connect(firstTab,&QTabWidget::tabCloseRequested,this,&Skeleton::closeFirstTab);
-    connect(secondTab,&QTabWidget::tabCloseRequested,this,&Skeleton::closeSecondTab);
+    connect(firstTab, &QTabWidget::tabCloseRequested, this, &Skeleton::closeFirstTab);
+    connect(secondTab, &QTabWidget::tabCloseRequested, this, &Skeleton::closeSecondTab);
 
     splitter->addWidget(firstTab);
     splitter->addWidget(secondTab);
@@ -61,7 +63,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
 
     stackedWindows->addWidget(splitter);
     stackedWindows->setCurrentIndex(0);
-    
+
     /* ------------Load Icons, Themes and Settings-------- */
     loadIcons();
     loadThemes();
@@ -101,8 +103,7 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     settingsPanel();
 
     /* --------Shortcuts-------- */
-    QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
-    connect(settingShortcut, &QShortcut::activated, this, &Skeleton::goToSettings);
+    shortcuts();
 
     /* ---------load settings----------- */
     loadSettings();
@@ -125,12 +126,12 @@ void Skeleton::newFile()
     QMessageBox::StandardButton reply = QMessageBox::question(
         this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
 
-    if(reply == QMessageBox::Yes)
+    if (reply == QMessageBox::Yes)
     {
         QString c_text = QFileDialog::getSaveFileName();
         QString s_text = c_text.simplified();
 
-        if(not s_text.isEmpty())
+        if (not s_text.isEmpty())
         {
             QFile file(s_text);
             file.open(QIODevice::WriteOnly);
@@ -148,28 +149,35 @@ void Skeleton::openFile()
     QString s_text = c_text.simplified();
 
     QString fileName;
-    for(auto var = s_text.end()-1; *var != "/"; --var){
+    for (auto var = s_text.end() - 1; *var != "/"; --var)
+    {
         fileName.push_front(*var);
     }
 
     QTextEdit *newEdit;
-    if(not s_text.isEmpty())
+    if (not s_text.isEmpty())
     {
         newEdit = new QTextEdit(this);
         QFile file(s_text);
         if (file.open(QIODevice::ReadOnly))
         {
-            if(firstTab->currentWidget() == focusEdit){
-                firstTab->addTab(newEdit,fileName);
-                firstEditList.push_back(newEdit);
+            if (firstTab->currentWidget() == focusEdit)
+            {
+                firstTab->addTab(newEdit, fileName);
+
                 firstTab->setCurrentWidget(newEdit);
+
+                firstEditList.push_back(newEdit);
             }
-            else if(secondTab->currentWidget() == focusEdit){
-                secondTab->addTab(newEdit,fileName);
-                secondEditList.push_back(newEdit);
+            else if (secondTab->currentWidget() == focusEdit)
+            {
+                secondTab->addTab(newEdit, fileName);
+
                 secondTab->setCurrentWidget(newEdit);
+
+                secondEditList.push_back(newEdit);
             }
-            
+
             newEdit->append(QString(file.readAll()));
         }
         file.close();
@@ -183,7 +191,7 @@ void Skeleton::saveFile()
     QString c_text = QFileDialog::getSaveFileName();
     QString s_text = c_text.simplified();
 
-    if(not s_text.isEmpty())
+    if (not s_text.isEmpty())
     {
         QFile file(s_text);
         file.open(QIODevice::WriteOnly);
@@ -198,7 +206,7 @@ void Skeleton::saveToPdf()
 
     QString c_text = QFileDialog::getSaveFileName();
     QString s_text = c_text.simplified();
-    if(not s_text.isEmpty())
+    if (not s_text.isEmpty())
     {
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
@@ -208,68 +216,69 @@ void Skeleton::saveToPdf()
     }
 }
 
-void Skeleton::setFontEdit() 
+void Skeleton::setFontEdit()
 {
     bool OK;
     int comma = 0;
     QString str;
     str.reserve(30);
     editFont = QFontDialog::getFont(&OK);
-    if(OK){
+    if (OK)
+    {
         firstEdit->setFont(editFont);
         secondEdit->setFont(editFont);
     }
-    for (auto it = editFont.toString().begin(); comma!=2; ++it)
+    for (auto it = editFont.toString().begin(); comma != 2; ++it)
     {
-        if(*it == ",")
+        if (*it == ",")
             ++comma;
-        if(comma!=2)
-        str.append(*it);
+        if (comma != 2)
+            str.append(*it);
     }
     zoomFirstWindow = editFont.pointSize();
     zoomSecondWindow = editFont.pointSize();
     fontLineEdit->setText(str);
 }
 
-void Skeleton::closeFirstTab(int index) 
+void Skeleton::closeFirstTab(int index)
 {
     firstTab->removeTab(index);
     firstEditList.at(index)->deleteLater();
     firstEditList.removeAt(index);
 }
 
-void Skeleton::closeSecondTab(int index) 
+void Skeleton::closeSecondTab(int index)
 {
     secondTab->removeTab(index);
     secondEditList.at(index)->deleteLater();
     secondEditList.removeAt(index);
 }
 
-QString Skeleton::getTheme() 
+QString Skeleton::getTheme()
 {
-    QString currentTheme; 
+    QString currentTheme;
 
-    if(defaultThemeButton->isChecked())
+    if (defaultThemeButton->isChecked())
     {
         currentTheme = "default";
     }
-    else if(blackThemeButton->isChecked())
+    else if (blackThemeButton->isChecked())
     {
         currentTheme = "black";
     }
-    else if(whiteThemeButton->isChecked())
+    else if (whiteThemeButton->isChecked())
     {
         currentTheme = "white";
     }
-    else if(spybotThemeButton->isChecked())
+    else if (spybotThemeButton->isChecked())
     {
         currentTheme = "spybot";
     }
-    else if(transparentThemeButton->isChecked())
+    else if (transparentThemeButton->isChecked())
     {
         currentTheme = "transparent";
     }
-    else if(bubbleThemeButton->isChecked())
+    else if (bubbleThemeButton->isChecked())
     {
         currentTheme = "bubble";
     }
@@ -277,23 +286,23 @@ QString Skeleton::getTheme()
     return currentTheme;
 }
 
-void Skeleton::setTheme(QString theme,int color) 
+void Skeleton::setTheme(QString theme, int color)
 {
     auto it = themes.find(theme);
     setStyleSheet(it->second);
 
-    if(color == BLACK_ICONS)
+    if (color == BLACK_ICONS)
         iconChangeToBlack();
-    if(color == WHITE_ICONS)
+    if (color == WHITE_ICONS)
         iconChangeToWhite();
 }
 
-int Skeleton::getThemeIcons() 
+int Skeleton::getThemeIcons()
 {
     QString th = getTheme();
     int color;
 
-    if(th == "default" or th == "black" or th == "spybot" or th == "transparent")
+    if (th == "default" or th == "black" or th == "spybot" or th == "transparent")
         color = 2;
     else
         color = 1;
@@ -301,19 +310,19 @@ int Skeleton::getThemeIcons()
     return color;
 }
 
-void Skeleton::setRadionButtonChecked(QString radioButton) 
+void Skeleton::setRadionButtonChecked(QString radioButton)
 {
-    if(radioButton == "default")
+    if (radioButton == "default")
         defaultThemeButton->setChecked(true);
-    else if(radioButton == "black")
+    else if (radioButton == "black")
         blackThemeButton->setChecked(true);
-    else if(radioButton == "white")
+    else if (radioButton == "white")
         whiteThemeButton->setChecked(true);
-    else if(radioButton == "transparent")
+    else if (radioButton == "transparent")
         transparentThemeButton->setChecked(true);
-    else if(radioButton == "spybot")
+    else if (radioButton == "spybot")
         spybotThemeButton->setChecked(true);
-    else if(radioButton == "bubble")
+    else if (radioButton == "bubble")
         bubbleThemeButton->setChecked(true);
 }
 
@@ -333,7 +342,7 @@ void Skeleton::zoomTextOut()
 
 void Skeleton::splitDisplay()
 {
-    if(secondTab->isHidden())
+    if (secondTab->isHidden())
     {
         secondTab->show();
     }
@@ -344,13 +353,13 @@ void Skeleton::splitDisplay()
 void Skeleton::clear()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-    
-    if(not focusEdit->document()->isEmpty())
+
+    if (not focusEdit->document()->isEmpty())
     {
         QMessageBox::StandardButton reply = QMessageBox::question(
             this, "Clear the file?", "Do you want to clear the file?", QMessageBox::Yes | QMessageBox::No);
 
-        if(reply == QMessageBox::Yes)
+        if (reply == QMessageBox::Yes)
         {
             focusEdit->clear();
         }
@@ -359,7 +368,7 @@ void Skeleton::clear()
 
 void Skeleton::goToSettings()
 {
-    if(stackedWindows->currentIndex() == 0)
+    if (stackedWindows->currentIndex() == 0)
     {
         disconnect(clearDisplayAction, &QAction::triggered, this, &Skeleton::clear);
         disconnect(newFileAction, &QAction::triggered, this, &Skeleton::newFile);
@@ -371,7 +380,7 @@ void Skeleton::goToSettings()
         disconnect(undoAction, &QAction::triggered, this, &Skeleton::undoText);
         disconnect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
         disconnect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
-        
+
         stackedWindows->setCurrentIndex(1);
     }
     else
@@ -386,36 +395,36 @@ void Skeleton::goToSettings()
         connect(undoAction, &QAction::triggered, this, &Skeleton::undoText);
         connect(redoAction, &QAction::triggered, this, &Skeleton::redoText);
         connect(pdfAction, &QAction::triggered, this, &Skeleton::saveToPdf);
-        
+
         stackedWindows->setCurrentIndex(0);
     }
 }
 
 void Skeleton::themeChanging()
 {
-    if(defaultThemeButton->isChecked())
+    if (defaultThemeButton->isChecked())
     {
-        setTheme("default",WHITE_ICONS);
+        setTheme("default", WHITE_ICONS);
     }
-    else if(blackThemeButton->isChecked())
+    else if (blackThemeButton->isChecked())
     {
-        setTheme("black",WHITE_ICONS);
+        setTheme("black", WHITE_ICONS);
     }
-    else if(whiteThemeButton->isChecked())
+    else if (whiteThemeButton->isChecked())
     {
-        setTheme("white",BLACK_ICONS);
+        setTheme("white", BLACK_ICONS);
     }
-    else if(spybotThemeButton->isChecked())
+    else if (spybotThemeButton->isChecked())
     {
-        setTheme("spybot",WHITE_ICONS);
+        setTheme("spybot", WHITE_ICONS);
     }
-    else if(transparentThemeButton->isChecked())
+    else if (transparentThemeButton->isChecked())
     {
-        setTheme("transparent",WHITE_ICONS);
+        setTheme("transparent", WHITE_ICONS);
     }
-    else if(bubbleThemeButton->isChecked())
+    else if (bubbleThemeButton->isChecked())
     {
-        setTheme("bubble",BLACK_ICONS);
+        setTheme("bubble", BLACK_ICONS);
     }
 }
 
@@ -462,33 +471,36 @@ void Skeleton::loadIcons()
 
 /* ---------------------------------------------------------------------------------- */
 
-void Skeleton::loadSettings() 
+void Skeleton::loadSettings()
 {
-    setGeometry(settings->value("geometry",QRect(1000,700,1000,500)).toRect());
+    setGeometry(settings->value("geometry", QRect(1000, 700, 1000, 500)).toRect());
 
-    if(not settings->value("theme").toString().isEmpty()){
-        setTheme(settings->value("theme").toString(),settings->value("themeIcons").toInt());
+    if (not settings->value("theme").toString().isEmpty())
+    {
+        setTheme(settings->value("theme").toString(), settings->value("themeIcons").toInt());
         setRadionButtonChecked(settings->value("theme").toString());
-    }else{
+    }
+    else
+    {
         setTheme();
         setRadionButtonChecked("default");
     }
 
     QFont font(settings->value("font").toString());
     zoomFirstWindow = font.pointSize();
-    zoomSecondWindow  = font.pointSize();
+    zoomSecondWindow = font.pointSize();
     firstEdit->setFont(font);
 }
 
-void Skeleton::saveSettings() 
+void Skeleton::saveSettings()
 {
-    settings->setValue("geometry",geometry());
-    settings->setValue("theme",getTheme());
-    settings->setValue("themeIcons",getThemeIcons());
-    settings->setValue("font",editFont.toString());
+    settings->setValue("geometry", geometry());
+    settings->setValue("theme", getTheme());
+    settings->setValue("themeIcons", getThemeIcons());
+    settings->setValue("font", editFont.toString());
 }
 
-void Skeleton::settingsPanel() 
+void Skeleton::settingsPanel()
 {
     /* ---------themes in settings ---------*/
     themesGroupBox = new QGroupBox("\t\tThemes:");
@@ -525,7 +537,7 @@ void Skeleton::settingsPanel()
 
     setFontButton = new QPushButton("set");
     setFontButton->setFixedWidth(70);
-    connect(setFontButton, &QPushButton::pressed,this,&Skeleton::setFontEdit);
+    connect(setFontButton, &QPushButton::pressed, this, &Skeleton::setFontEdit);
 
     hboxFontLayout->addWidget(fontLineEdit);
     hboxFontLayout->addWidget(setFontButton);
@@ -535,7 +547,7 @@ void Skeleton::settingsPanel()
     /* ------------Settings layout----------- */
     auto vboxSetting = new QVBoxLayout();
     vboxSetting->addWidget(themesGroupBox);
-    //vboxSetting->addWidget(syntaxGroupBox);
+
     vboxSetting->addWidget(fontGroupBox);
     vboxSetting->addStretch(1);
 
@@ -553,20 +565,66 @@ void Skeleton::settingsPanel()
     connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
 }
 
+void Skeleton::shortcuts()
+{
+    QShortcut *setting = new QShortcut(QKeySequence("Ctrl+,"), this);
+    QShortcut *switchLeftTab = new QShortcut(QKeySequence("Alt+Left"), this);
+    QShortcut *switchRightTab = new QShortcut(QKeySequence("Alt+Right"), this);
+
+    connect(setting, &QShortcut::activated, this, &Skeleton::goToSettings);
+
+    connect(switchLeftTab, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit)
+        {
+            int index = firstTab->indexOf(focusEdit);
+            if (index > 0)
+                firstTab->setCurrentIndex(--index);
+        }
+        else if (secondTab->currentWidget() == focusEdit)
+        {
+            int index = secondTab->indexOf(focusEdit);
+            if (index > 0)
+                secondTab->setCurrentIndex(--index);
+        }
+    });
+
+    connect(switchRightTab, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit)
+        {
+            int index = firstTab->indexOf(focusEdit);
+            if (index < firstEditList.count())
+                firstTab->setCurrentIndex(++index);
+        }
+        else if (secondTab->currentWidget() == focusEdit)
+        {
+            int index = secondTab->indexOf(focusEdit);
+            if (index < secondEditList.count())
+                secondTab->setCurrentIndex(++index);
+        }
+    });
+}
+
 /* ---------------------------------------------------------------------------------- */
 
-void Skeleton::wheelEvent(QWheelEvent *event) 
+void Skeleton::wheelEvent(QWheelEvent *event)
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
     if (QApplication::keyboardModifiers() == Qt::ControlModifier)
-     {
-        if (event->delta() > 0) {
+    {
+        if (event->delta() > 0)
+        {
             focusEdit->zoomIn();
-        } else {
+        }
+        else
+        {
             focusEdit->zoomOut();
         }
-     }
+    }
 }
 
 void Skeleton::iconChangeToBlack()
@@ -604,9 +662,9 @@ void Skeleton::loadThemes()
     QFile styleSheetFile;
 
     std::vector<QString> themeNames = {
-        "default", "black", "white", "spybot","bubble", "transparent"};
+        "default", "black", "white", "spybot", "bubble", "transparent"};
 
-    for(const auto &theme: themeNames)
+    for (const auto &theme : themeNames)
     {
         styleSheetFile.setFileName(":/" + theme + ".qss");
         styleSheetFile.open(QFile::ReadOnly);

@@ -115,6 +115,6 @@ private:
     void loadSettings();
     void saveSettings();
     void settingsPanel();
-
+    void shortcuts();
     void wheelEvent(QWheelEvent *event) override;
 };

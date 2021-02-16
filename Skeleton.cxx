@@ -104,11 +104,6 @@ Skeleton::Skeleton(QWidget *parent) : QMainWindow(parent)
     QShortcut *settingShortcut = new QShortcut(QKeySequence("Ctrl+,"), this);
     connect(settingShortcut, &QShortcut::activated, this, &Skeleton::goToSettings);
 
-    /* ----------setting Default theme----------- */
-    //setTheme("default",WHITE_ICONS);
-    
-    //setSyntaxHighlight();
-
     /* ---------load settings----------- */
     loadSettings();
 
@@ -151,11 +146,6 @@ void Skeleton::openFile()
 
     QString c_text = QFileDialog::getOpenFileName();
     QString s_text = c_text.simplified();
-    
-    /* QString tmp;
-    for(auto var = s_text.end()-1; *var != "."; --var){
-        tmp.push_front(*var);
-    } */
 
     QString fileName;
     for(auto var = s_text.end()-1; *var != "/"; --var){
@@ -184,12 +174,6 @@ void Skeleton::openFile()
         }
         file.close();
     }
-    /* if(tmp == "cxx" or tmp == "cpp" or tmp == "hxx" or tmp == "hpp" or tmp == "h"){
-        if(syntaxThemeSaving == EXPAN)
-            doSyntax(newEdit->document(),EXPAN);
-        if(syntaxThemeSaving == PARTISANER)
-            doSyntax(newEdit->document(),PARTISANER); 
-    } */
 }
 
 void Skeleton::saveFile()
@@ -223,60 +207,6 @@ void Skeleton::saveToPdf()
         focusEdit->document()->print(&printer);
     }
 }
-
-/* void Skeleton::setSyntaxHighlight() 
-{
-    if(syntaxPartisanerButton->isChecked())
-    {
-        syntaxThemeSaving = false;
-        
-        QThread *firstThreadPatrisaner = new QThread(this);
-        connect(firstThreadPatrisaner,&QThread::started,this,[&](){
-            setSyntax(firstEditList,PARTISANER);
-        });
-        firstThreadPatrisaner->start();
-        
-        QThread *secondThreadPatrisaner = new QThread(this);
-        secondThreadPatrisaner->start();
-        connect(secondThreadPatrisaner,&QThread::started,this,[&](){
-            setSyntax(secondEditList,PARTISANER);
-        });
-        secondThreadPatrisaner->start();
-
-    }
-    else if(syntaxExpanButton->isChecked())
-    {
-        syntaxThemeSaving = true;
-        
-        QThread *firstThreadExpan = new QThread(this);
-        connect(firstThreadExpan,&QThread::started,this,[&](){
-            setSyntax(firstEditList,EXPAN);
-        });
-        firstThreadExpan->start();
-
-        QThread *secondThreadExpan = new QThread(this);
-        connect(secondThreadExpan,&QThread::started,this,[&](){
-            setSyntax(secondEditList,EXPAN);
-        });
-        secondThreadExpan->start();
-    }
-    else if(noHighlightButton->isChecked())
-    {
-        QThread *firstThreadWhite = new QThread(this);
-        connect(firstThreadWhite,&QThread::started,this,[&](){
-            for (auto &item : firstEditList)
-                syntax = new SyntaxPartisaner(item->document());
-        });
-        firstThreadWhite->start();
-
-        QThread *secondThreadWhite = new QThread(this);
-        connect(secondThreadWhite,&QThread::started,this,[&](){
-            for (auto &item : secondEditList)
-                syntax = new SyntaxPartisaner(item->document());
-        });
-        secondThreadWhite->start();
-    }
-} */
 
 void Skeleton::setFontEdit() 
 {
@@ -371,11 +301,6 @@ int Skeleton::getThemeIcons()
     return color;
 }
 
-/* bool Skeleton::getHighlight() 
-{
-    return syntaxThemeSaving;
-} */
-
 void Skeleton::setRadionButtonChecked(QString radioButton) 
 {
     if(radioButton == "default")
@@ -391,27 +316,6 @@ void Skeleton::setRadionButtonChecked(QString radioButton)
     else if(radioButton == "bubble")
         bubbleThemeButton->setChecked(true);
 }
-
-/* void Skeleton::doSyntax(QTextDocument *document,int SYNTAX) 
-{
-    if(SYNTAX == PARTISANER){
-        syntax = new SyntaxPartisaner(document,
-                        Qt::cyan,QColor("#e500f8"),Qt::darkGray,Qt::darkGray,
-                        Qt::darkGreen,QColor("#00f8a2"));
-    }
-    else if(SYNTAX == EXPAN){
-        syntax = new SyntaxPartisaner(document,
-                        QColor("#f73618"),QColor("#fcd900"),Qt::darkGray,Qt::darkGray,
-                        QColor("#409ffe"),Qt::cyan);
-    }
-}
-
-void Skeleton::setSyntax(QVector<QTextEdit *> textEditVecor,int SYNTAX) 
-{
-    for(auto const &item : textEditVecor){
-            doSyntax(item->document(),SYNTAX);
-        }
-} */
 
 void Skeleton::zoomTextIn()
 {
@@ -574,8 +478,6 @@ void Skeleton::loadSettings()
     zoomFirstWindow = font.pointSize();
     zoomSecondWindow  = font.pointSize();
     firstEdit->setFont(font);
-
-    //syntaxThemeSaving = settings->value("highlight").toBool();
 }
 
 void Skeleton::saveSettings() 
@@ -584,7 +486,6 @@ void Skeleton::saveSettings()
     settings->setValue("theme",getTheme());
     settings->setValue("themeIcons",getThemeIcons());
     settings->setValue("font",editFont.toString());
-    //settings->setValue("highlight",getHighlight());
 }
 
 void Skeleton::settingsPanel() 
@@ -614,21 +515,6 @@ void Skeleton::settingsPanel()
 
     vboxLayoutThemes->addSpacing(10);
     themesGroupBox->setLayout(vboxLayoutThemes);
-
-    /* ----------syntax highlighter in settings----------- */
-    
-    /* syntaxPartisanerButton = new QRadioButton("Partisaner", this);
-    syntaxExpanButton = new QRadioButton("ExPan", this);
-    noHighlightButton = new QRadioButton("No highlight", this);
-    noHighlightButton->setChecked(true);
-
-    auto vboxLayoutSyntax = new QVBoxLayout();
-    vboxLayoutSyntax->addWidget(syntaxPartisanerButton);
-    vboxLayoutSyntax->addWidget(syntaxExpanButton);
-    vboxLayoutSyntax->addWidget(noHighlightButton);
-
-    auto syntaxGroupBox = new QGroupBox("\t\tSyntax Highlighter for C++:");
-    syntaxGroupBox->setLayout(vboxLayoutSyntax); */
 
     /* ---------Font settings------------------ */
     auto fontGroupBox = new QGroupBox("\t\tFont");
@@ -665,11 +551,6 @@ void Skeleton::settingsPanel()
     connect(spybotThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
     connect(transparentThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
     connect(bubbleThemeButton, &QRadioButton::clicked, this, &Skeleton::themeChanging);
-
-    /* ----------connection syntax highlighter changing in settingd */
-    /* connect(syntaxPartisanerButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
-    connect(syntaxExpanButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight);
-    connect(noHighlightButton, &QRadioButton::clicked, this, &Skeleton::setSyntaxHighlight); */
 }
 
 /* ---------------------------------------------------------------------------------- */

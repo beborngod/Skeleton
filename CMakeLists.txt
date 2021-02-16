@@ -42,8 +42,6 @@ set(PROJECT_SOURCES
         main.cxx
         Skeleton.cxx
         Skeleton.h
-        #SyntaxPartisaner.cxx
-        #SyntaxPartisaner.h
 )
 
 qt5_add_resources(PROJECT_SOURCES images.qrc stylesheet.qrc)

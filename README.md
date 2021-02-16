@@ -5,7 +5,7 @@
 ![](images/transparent_theme.png)
 - SpyBot
 ![](images/spybot_theme.png)
-- Two variantes of cxx syntax
+- Multi-Tabs
 - Font changing
 - PDF writer
 ![](images/creating_pdf.png)

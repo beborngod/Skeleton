@@ -13,11 +13,9 @@ CONFIG += static
 SOURCES += \
     main.cxx \
     Skeleton.cxx \
-    SyntaxPartisaner.cxx
 
 HEADERS += \
     Skeleton.h \
-    SyntaxPartisaner.h
 
 
 # Default rules for deployment.

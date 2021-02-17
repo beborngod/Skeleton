@@ -36,17 +36,17 @@ class Skeleton final : public QMainWindow
 
     QStackedWidget *stackedWindows;
 
-    std::pair<QPixmap,QPixmap> newPix;
-    std::pair<QPixmap,QPixmap> openPix;
-    std::pair<QPixmap,QPixmap> savePix;
-    std::pair<QPixmap,QPixmap> minusPix;
-    std::pair<QPixmap,QPixmap> plusPix;
-    std::pair<QPixmap,QPixmap> clearPix;
-    std::pair<QPixmap,QPixmap> splitPix;
-    std::pair<QPixmap,QPixmap> settingsPix;
-    std::pair<QPixmap,QPixmap> undoPix;
-    std::pair<QPixmap,QPixmap> redoPix;
-    std::pair<QPixmap,QPixmap> pdfPix;
+    std::pair<QPixmap, QPixmap> newPix;
+    std::pair<QPixmap, QPixmap> openPix;
+    std::pair<QPixmap, QPixmap> savePix;
+    std::pair<QPixmap, QPixmap> minusPix;
+    std::pair<QPixmap, QPixmap> plusPix;
+    std::pair<QPixmap, QPixmap> clearPix;
+    std::pair<QPixmap, QPixmap> splitPix;
+    std::pair<QPixmap, QPixmap> settingsPix;
+    std::pair<QPixmap, QPixmap> undoPix;
+    std::pair<QPixmap, QPixmap> redoPix;
+    std::pair<QPixmap, QPixmap> pdfPix;
 
     QAction *newFileAction;
     QAction *openFileAction;
@@ -69,13 +69,13 @@ class Skeleton final : public QMainWindow
     QRadioButton *bubbleThemeButton;
     QRadioButton *transparentThemeButton;
 
-    std::map<QString,QString>themes;
-    
+    std::map<QString, QString> themes;
+
     QList<QTextEdit *> firstEditList;
     QList<QTextEdit *> secondEditList;
 
-    std::map<QTextEdit *,QString>fileNameFirstEdit;
-    std::map<QTextEdit *,QString>fileNameSecondEdit;
+    std::multimap<QTextEdit *, QString> fileNameFirstEdit;
+    std::multimap<QTextEdit *, QString> fileNameSecondEdit;
 
     QSettings *settings;
 
@@ -83,10 +83,15 @@ class Skeleton final : public QMainWindow
     QLineEdit *fontLineEdit;
     QPushButton *setFontButton;
 
-    enum{ BLACK_ICONS = 1, WHITE_ICONS = 2};
+    enum
+    {
+        BLACK_ICONS = 1,
+        WHITE_ICONS = 2
+    };
 
     QTabWidget *firstTab;
     QTabWidget *secondTab;
+
 public:
     explicit Skeleton(QWidget *parent = nullptr);
     ~Skeleton();
@@ -106,9 +111,10 @@ protected slots:
     void setFontEdit();
     void closeFirstTab(int index);
     void closeSecondTab(int index);
+
 private:
     QString getTheme();
-    void setTheme(QString theme = "default",int color = WHITE_ICONS);
+    void setTheme(QString theme = "default", int color = WHITE_ICONS);
     int getThemeIcons();
     void setRadionButtonChecked(QString radioButton);
     void iconChangeToBlack();
@@ -119,6 +125,7 @@ private:
     void saveSettings();
     void settingsPanel();
     void shortcuts();
-    void doNewFile(QTabWidget * focusTab, QList<QTextEdit *> &editList);
+    void doNewFile(QTabWidget *focusTab,
+     QList<QTextEdit *> &editList, std::multimap<QTextEdit *, QString> &fileNameMap);
     void wheelEvent(QWheelEvent *event) override;
 };

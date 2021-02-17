@@ -7,18 +7,17 @@
 ### Platforms
 - Linux
 
-### Debian based installing
-- You have to install additional packages
+## Installing
+
+- Debian based :
 
         sudo apt install libxcb-xinerama0
-
-- And next:
         
         chmod +x InstallerSkeleton.run
     
         ./InstallerSkeleton.run
 
-### Debian based installing
+- RedHat based :
     
          chmod +x InstallerSkeleton.run
     

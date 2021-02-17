@@ -304,14 +304,15 @@ void Skeleton::setFontEdit()
 
 void Skeleton::closeFirstTab(int index)
 {
-    if (firstEditList.count() != 0)
+    if (firstEditList.count() > 0)
     {
         firstTab->removeTab(index);
         firstEditList.at(index)->deleteLater();
         firstEditList.removeAt(index);
         firstEditList.at(--index)->setFocus();
     }
-    else
+    
+    if (firstEditList.count() == 0)
     {
         firstTab->hide();
     }
@@ -319,14 +320,15 @@ void Skeleton::closeFirstTab(int index)
 
 void Skeleton::closeSecondTab(int index)
 {
-    if (secondEditList.count() != 0)
+    if (secondEditList.count() > 0)
     {
         secondTab->removeTab(index);
         secondEditList.at(index)->deleteLater();
         secondEditList.removeAt(index);
         secondEditList.at(--index)->setFocus();
     }
-    else
+
+    if (secondEditList.count() == 0)
     {
         secondTab->hide();
     }

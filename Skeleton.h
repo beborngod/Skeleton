@@ -74,6 +74,9 @@ class Skeleton final : public QMainWindow
     QList<QTextEdit *> firstEditList;
     QList<QTextEdit *> secondEditList;
 
+    std::map<QTextEdit *,QString>fileNameFirstEdit;
+    std::map<QTextEdit *,QString>fileNameSecondEdit;
+
     QSettings *settings;
 
     QFont editFont;
@@ -116,5 +119,6 @@ private:
     void saveSettings();
     void settingsPanel();
     void shortcuts();
+    void doNewFile(QTabWidget * focusTab, QList<QTextEdit *> &editList);
     void wheelEvent(QWheelEvent *event) override;
 };

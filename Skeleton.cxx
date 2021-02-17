@@ -1,7 +1,5 @@
 #include "Skeleton.h"
 
-#include <iostream>
-
 static int zoomFirstWindow = 0;
 static int zoomSecondWindow = 0;
 
@@ -117,43 +115,38 @@ Skeleton::~Skeleton()
     saveSettings();
 }
 
+void Skeleton::doNewFile(QTabWidget *focusTab, QList<QTextEdit *> &editList)
+{
+    auto newEdit = new QTextEdit(this);
+
+    focusTab->addTab(newEdit, "Untilited");
+
+    focusTab->setCurrentWidget(newEdit);
+
+    editList.push_back(newEdit);
+
+    newEdit->setFocus();
+}
+
 void Skeleton::newFile()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
     if (firstEditList.count() == 0)
     {
-        auto newEdit = new QTextEdit(this);
-
-        firstTab->addTab(newEdit, "Untilited");
-
-        firstTab->setCurrentWidget(newEdit);
-
-        firstEditList.push_back(newEdit);
+        doNewFile(firstTab, firstEditList);
 
         firstTab->show();
-
-        newEdit->setFocus();
     }
     else
     {
-        focusEdit->clear();
-
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes)
+        if (firstTab->currentWidget() == focusEdit)
         {
-            QString c_text = QFileDialog::getSaveFileName();
-            QString s_text = c_text.simplified();
-
-            if (not s_text.isEmpty())
-            {
-                QFile file(s_text);
-                file.open(QIODevice::WriteOnly);
-                file.write(focusEdit->toPlainText().toUtf8());
-                file.close();
-            }
+            doNewFile(firstTab, firstEditList);
+        }
+        else if (secondTab->currentWidget() == focusEdit)
+        {
+            doNewFile(secondTab, secondEditList);
         }
     }
 }
@@ -176,6 +169,7 @@ void Skeleton::openFile()
     {
         newEdit = new QTextEdit(this);
         QFile file(s_text);
+        
         if (file.open(QIODevice::ReadOnly))
         {
             if (firstTab->currentWidget() == focusEdit)
@@ -185,6 +179,8 @@ void Skeleton::openFile()
                 firstTab->setCurrentWidget(newEdit);
 
                 firstEditList.push_back(newEdit);
+
+                fileNameFirstEdit.emplace(newEdit, s_text);
             }
             else if (secondTab->currentWidget() == focusEdit)
             {
@@ -193,6 +189,8 @@ void Skeleton::openFile()
                 secondTab->setCurrentWidget(newEdit);
 
                 secondEditList.push_back(newEdit);
+
+                fileNameSecondEdit.emplace(newEdit, s_text);
             }
 
             newEdit->append(QString(file.readAll()));
@@ -214,6 +212,35 @@ void Skeleton::saveFile()
         file.open(QIODevice::WriteOnly);
         file.write(focusEdit->toPlainText().toUtf8());
         file.close();
+    }
+
+    if (firstTab->currentWidget() == focusEdit)
+    {
+        int index = firstTab->indexOf(focusEdit);
+        if (firstTab->tabText(index) == "Untilited")
+        {
+            QString fileName;
+            for (auto var = s_text.end() - 1; *var != "/"; --var)
+            {
+                fileName.push_front(*var);
+            }
+
+            firstTab->setTabText(index, fileName);
+        }
+    }
+    else if (secondTab->currentWidget() == focusEdit)
+    {
+        int index = firstTab->indexOf(focusEdit);
+        if (secondTab->tabText(index) == "Untilited")
+        {
+            QString fileName;
+            for (auto var = s_text.end() - 1; *var != "/"; --var)
+            {
+                fileName.push_front(*var);
+            }
+
+            secondTab->setTabText(index, fileName);
+        }
     }
 }
 
@@ -643,12 +670,27 @@ void Skeleton::shortcuts()
 
     QShortcut *splitStc = new QShortcut(QKeySequence("Ctrl+\\"), this);
 
+    QShortcut *openFileStc = new QShortcut(QKeySequence("Ctrl+o"), this);
+
+    QShortcut *saveFileStc = new QShortcut(QKeySequence("Ctrl+Shift+s"), this);
+    QShortcut *saveStc = new QShortcut(QKeySequence("Ctrl+s"), this);
+
+    QShortcut *saveFileToPdfStc = new QShortcut(QKeySequence("Ctrl+p"), this);
+
+    QShortcut *clearFileStc = new QShortcut(QKeySequence("Ctrl+r"), this);
+
     connect(setting, &QShortcut::activated, this, &Skeleton::goToSettings);
 
     connect(zoomInStc, &QShortcut::activated, this, &Skeleton::zoomTextIn);
     connect(zoomOutStc, &QShortcut::activated, this, &Skeleton::zoomTextOut);
 
     connect(splitStc, &QShortcut::activated, this, &Skeleton::splitDisplay);
+
+    connect(openFileStc, &QShortcut::activated, this, &Skeleton::openFile);
+    connect(saveFileStc, &QShortcut::activated, this, &Skeleton::saveFile);
+    connect(saveFileToPdfStc, &QShortcut::activated, this, &Skeleton::saveToPdf);
+
+    connect(clearFileStc, &QShortcut::activated, this, &Skeleton::clear);
 
     connect(switchLeftTab, &QShortcut::activated, this, [&]() {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
@@ -681,6 +723,45 @@ void Skeleton::shortcuts()
             int index = secondTab->indexOf(focusEdit);
             if (index < secondEditList.count())
                 secondTab->setCurrentIndex(++index);
+        }
+    });
+
+    connect(saveStc, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit)
+        {
+            int index = firstTab->indexOf(focusEdit);
+
+            if (firstTab->tabText(index) != "Untilited")
+            {
+                auto fileName = fileNameFirstEdit.find(focusEdit);
+                QFile file(fileName->second);
+                file.open(QIODevice::WriteOnly);
+                file.write(focusEdit->toPlainText().toUtf8());
+                file.close();
+            }
+            else
+            {
+                saveFile();
+            }
+        }
+        else if (secondTab->currentWidget() == focusEdit)
+        {
+            int index = firstTab->indexOf(focusEdit);
+
+            if (firstTab->tabText(index) != "Untilited")
+            {
+                auto fileName = fileNameSecondEdit.find(focusEdit);
+                QFile file(fileName->second);
+                file.open(QIODevice::WriteOnly);
+                file.write(focusEdit->toPlainText().toUtf8());
+                file.close();
+            }
+            else
+            {
+                saveFile();
+            }
         }
     });
 }

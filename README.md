@@ -15,7 +15,7 @@
 
 Its avaliable too in other Linux platforms but it wasn't tested.
 
-### Installing
+## Installing:
 
 - Debian based
 

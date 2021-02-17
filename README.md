@@ -3,6 +3,8 @@
 
 ## Features
 - Multi-Tabs
+- Shortcuts
+- Themes changing
 - Font changing
 - PDF writer
 

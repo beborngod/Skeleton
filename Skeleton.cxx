@@ -121,22 +121,39 @@ void Skeleton::newFile()
 {
     focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-    focusEdit->clear();
-
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes)
+    if (firstEditList.count() == 0)
     {
-        QString c_text = QFileDialog::getSaveFileName();
-        QString s_text = c_text.simplified();
+        auto newEdit = new QTextEdit(this);
 
-        if (not s_text.isEmpty())
+        firstTab->addTab(newEdit, "Untilited");
+
+        firstTab->setCurrentWidget(newEdit);
+
+        firstEditList.push_back(newEdit);
+
+        firstTab->show();
+
+        newEdit->setFocus();
+    }
+    else
+    {
+        focusEdit->clear();
+
+        QMessageBox::StandardButton reply = QMessageBox::question(
+            this, "Save the file?", "Do you want to save the file?", QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes)
         {
-            QFile file(s_text);
-            file.open(QIODevice::WriteOnly);
-            file.write(focusEdit->toPlainText().toUtf8());
-            file.close();
+            QString c_text = QFileDialog::getSaveFileName();
+            QString s_text = c_text.simplified();
+
+            if (not s_text.isEmpty())
+            {
+                QFile file(s_text);
+                file.open(QIODevice::WriteOnly);
+                file.write(focusEdit->toPlainText().toUtf8());
+                file.close();
+            }
         }
     }
 }
@@ -202,17 +219,20 @@ void Skeleton::saveFile()
 
 void Skeleton::saveToPdf()
 {
-    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
-
-    QString c_text = QFileDialog::getSaveFileName();
-    QString s_text = c_text.simplified();
-    if (not s_text.isEmpty())
+    if (firstEditList.count() > 0 or firstEditList.count() > 0)
     {
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setOutputFormat(QPrinter::PdfFormat);
-        printer.setOutputFileName(QString("%1.pdf").arg(s_text));
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        focusEdit->document()->print(&printer);
+        QString c_text = QFileDialog::getSaveFileName();
+        QString s_text = c_text.simplified();
+        if (not s_text.isEmpty())
+        {
+            QPrinter printer(QPrinter::HighResolution);
+            printer.setOutputFormat(QPrinter::PdfFormat);
+            printer.setOutputFileName(QString("%1.pdf").arg(s_text));
+
+            focusEdit->document()->print(&printer);
+        }
     }
 }
 
@@ -245,6 +265,11 @@ void Skeleton::closeFirstTab(int index)
     firstTab->removeTab(index);
     firstEditList.at(index)->deleteLater();
     firstEditList.removeAt(index);
+
+    if (firstEditList.count() == 0)
+    {
+        firstTab->hide();
+    }
 }
 
 void Skeleton::closeSecondTab(int index)
@@ -252,6 +277,11 @@ void Skeleton::closeSecondTab(int index)
     secondTab->removeTab(index);
     secondEditList.at(index)->deleteLater();
     secondEditList.removeAt(index);
+
+    if (secondEditList.count() == 0)
+    {
+        secondTab->hide();
+    }
 }
 
 QString Skeleton::getTheme()
@@ -342,12 +372,48 @@ void Skeleton::zoomTextOut()
 
 void Skeleton::splitDisplay()
 {
-    if (secondTab->isHidden())
+    if (firstTab->isHidden())
+    {
+        if (firstEditList.count() == 0)
+        {
+            auto newEdit = new QTextEdit(this);
+
+            firstTab->addTab(newEdit, "Untilited");
+
+            firstTab->setCurrentWidget(newEdit);
+
+            firstEditList.push_back(newEdit);
+
+            firstTab->show();
+        }
+        else
+        {
+            firstTab->show();
+        }
+    }
+    else if (secondTab->isHidden())
     {
         secondTab->show();
+
+        if (secondEditList.count() == 0)
+        {
+            auto newEdit = new QTextEdit(this);
+
+            secondTab->addTab(newEdit, "Untilited");
+
+            secondTab->setCurrentWidget(newEdit);
+
+            secondEditList.push_back(newEdit);
+        }
     }
-    else
+    else if (focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget()), firstTab->currentWidget() == focusEdit)
+    {
         secondTab->hide();
+    }
+    else if (focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget()), secondTab->currentWidget() == focusEdit)
+    {
+        firstTab->hide();
+    }
 }
 
 void Skeleton::clear()
@@ -568,10 +634,21 @@ void Skeleton::settingsPanel()
 void Skeleton::shortcuts()
 {
     QShortcut *setting = new QShortcut(QKeySequence("Ctrl+,"), this);
+
     QShortcut *switchLeftTab = new QShortcut(QKeySequence("Alt+Left"), this);
     QShortcut *switchRightTab = new QShortcut(QKeySequence("Alt+Right"), this);
 
+    QShortcut *zoomInStc = new QShortcut(QKeySequence("Ctrl+="), this);
+    QShortcut *zoomOutStc = new QShortcut(QKeySequence("Ctrl+-"), this);
+
+    QShortcut *splitStc = new QShortcut(QKeySequence("Ctrl+\\"), this);
+
     connect(setting, &QShortcut::activated, this, &Skeleton::goToSettings);
+
+    connect(zoomInStc, &QShortcut::activated, this, &Skeleton::zoomTextIn);
+    connect(zoomOutStc, &QShortcut::activated, this, &Skeleton::zoomTextOut);
+
+    connect(splitStc, &QShortcut::activated, this, &Skeleton::splitDisplay);
 
     connect(switchLeftTab, &QShortcut::activated, this, [&]() {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());

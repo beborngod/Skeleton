@@ -1,7 +1,5 @@
 #include "Skeleton.h"
 
-#include <iostream>
-
 static int zoomFirstWindow = 0;
 static int zoomSecondWindow = 0;
 
@@ -124,6 +122,8 @@ void Skeleton::doNewFile(QTabWidget *focusTab, QList<QTextEdit *> &editList, std
 {
     auto newEdit = new QTextEdit(this);
 
+    newEdit->setFont(editFont);
+
     focusTab->addTab(newEdit, "Untilited");
 
     focusTab->setCurrentWidget(newEdit);
@@ -131,8 +131,6 @@ void Skeleton::doNewFile(QTabWidget *focusTab, QList<QTextEdit *> &editList, std
     editList.push_back(newEdit);
 
     newEdit->setFocus();
-
-    newEdit->setFont(editFont);
 
     fileNameMap.emplace(newEdit, "Untilited");
 }
@@ -275,15 +273,22 @@ void Skeleton::saveToPdf()
 
 void Skeleton::setFontEdit()
 {
+    focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
     bool OK;
     int comma = 0;
+
     QString str;
     str.reserve(30);
+
     editFont = QFontDialog::getFont(&OK);
+
     if (OK)
     {
-        firstEdit->setFont(editFont);
-        secondEdit->setFont(editFont);
+        for (auto &editItem : firstEditList)
+            editItem->setFont(editFont);
+        for (auto &editItem : secondEditList)
+            editItem->setFont(editFont);
     }
     for (auto it = editFont.toString().begin(); comma != 2; ++it)
     {
@@ -299,11 +304,14 @@ void Skeleton::setFontEdit()
 
 void Skeleton::closeFirstTab(int index)
 {
-    firstTab->removeTab(index);
-    firstEditList.at(index)->deleteLater();
-    firstEditList.removeAt(index);
-
-    if (firstEditList.count() == 0)
+    if (firstEditList.count() != 0)
+    {
+        firstTab->removeTab(index);
+        firstEditList.at(index)->deleteLater();
+        firstEditList.removeAt(index);
+        firstEditList.at(--index)->setFocus();
+    }
+    else
     {
         firstTab->hide();
     }
@@ -311,11 +319,14 @@ void Skeleton::closeFirstTab(int index)
 
 void Skeleton::closeSecondTab(int index)
 {
-    secondTab->removeTab(index);
-    secondEditList.at(index)->deleteLater();
-    secondEditList.removeAt(index);
-
-    if (secondEditList.count() == 0)
+    if (secondEditList.count() != 0)
+    {
+        secondTab->removeTab(index);
+        secondEditList.at(index)->deleteLater();
+        secondEditList.removeAt(index);
+        secondEditList.at(--index)->setFocus();
+    }
+    else
     {
         secondTab->hide();
     }
@@ -693,7 +704,7 @@ void Skeleton::shortcuts()
 
     QShortcut *closeTabStc = new QShortcut(QKeySequence("Ctrl+Shift+q"), this);
 
-    QShortcut *moveTab = new QShortcut(QKeySequence("Ctrl+m"), this);
+    QShortcut *moveTab = new QShortcut(QKeySequence("Ctrl+Shift+m"), this);
 
     /* -----------------------Connection-------------------------- */
     connect(setting, &QShortcut::activated, this, &Skeleton::goToSettings);
@@ -814,7 +825,7 @@ void Skeleton::shortcuts()
     connect(moveTab, &QShortcut::activated, this, [&]() {
         focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
 
-        if (firstTab->currentWidget() == focusEdit and not secondTab->isHidden())
+        if (firstTab->currentWidget() == focusEdit)
         {
             int index = firstTab->indexOf(focusEdit);
             secondTab->addTab(focusEdit, firstTab->tabText(index));
@@ -832,11 +843,12 @@ void Skeleton::shortcuts()
                 firstTab->hide();
             }
 
-            std::cout << "firstEditList.count() -> " << firstEditList.count() << '\n';
-
             fileNameSecondEdit.emplace(focusEdit, firstTab->tabText(index));
+
+            if (secondTab->isHidden())
+                secondTab->show();
         }
-        else if (secondTab->currentWidget() == focusEdit and not firstTab->isHidden())
+        else if (secondTab->currentWidget() == focusEdit)
         {
             int index = secondTab->indexOf(focusEdit);
             firstTab->addTab(focusEdit, secondTab->tabText(index));
@@ -853,9 +865,11 @@ void Skeleton::shortcuts()
             {
                 secondTab->hide();
             }
-            std::cout << "secondEditList.count() -> " << secondEditList.count() << '\n';
 
             fileNameSecondEdit.emplace(focusEdit, secondTab->tabText(index));
+
+            if (firstTab->isHidden())
+                firstTab->show();
         }
     });
 }

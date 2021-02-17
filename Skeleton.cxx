@@ -120,7 +120,7 @@ Skeleton::~Skeleton()
     saveSettings();
 }
 
-void Skeleton::doNewFile(QTabWidget *focusTab, QList<QTextEdit *> &editList,std::multimap<QTextEdit* ,QString> &fileNameMap)
+void Skeleton::doNewFile(QTabWidget *focusTab, QList<QTextEdit *> &editList, std::multimap<QTextEdit *, QString> &fileNameMap)
 {
     auto newEdit = new QTextEdit(this);
 
@@ -143,7 +143,7 @@ void Skeleton::newFile()
 
     if (firstEditList.count() == 0)
     {
-        doNewFile(firstTab, firstEditList,fileNameFirstEdit);
+        doNewFile(firstTab, firstEditList, fileNameFirstEdit);
 
         firstTab->show();
     }
@@ -151,11 +151,11 @@ void Skeleton::newFile()
     {
         if (firstTab->currentWidget() == focusEdit)
         {
-            doNewFile(firstTab, firstEditList,fileNameFirstEdit);
+            doNewFile(firstTab, firstEditList, fileNameFirstEdit);
         }
         else if (secondTab->currentWidget() == focusEdit)
         {
-            doNewFile(secondTab, secondEditList,fileNameSecondEdit);
+            doNewFile(secondTab, secondEditList, fileNameSecondEdit);
         }
     }
 }
@@ -244,7 +244,7 @@ void Skeleton::saveFile()
         }
         else if (secondTab->currentWidget() == focusEdit)
         {
-            int index = firstTab->indexOf(focusEdit);
+            int index = secondTab->indexOf(focusEdit);
 
             secondTab->setTabText(index, fileName);
 
@@ -413,9 +413,10 @@ void Skeleton::splitDisplay()
     {
         if (firstEditList.count() == 0)
         {
-            doNewFile(firstTab,firstEditList,fileNameFirstEdit);
+            doNewFile(firstTab, firstEditList, fileNameFirstEdit);
 
             firstTab->show();
+            firstTab->currentWidget()->setFocus();
         }
         else
         {
@@ -424,11 +425,14 @@ void Skeleton::splitDisplay()
     }
     else if (secondTab->isHidden())
     {
-        secondTab->show();
-
-        if (secondEditList.count() == 0)
+        if (secondEditList.count() != 0)
         {
-            doNewFile(secondTab,secondEditList,fileNameSecondEdit);
+            secondTab->show();
+            secondTab->currentWidget()->setFocus();
+        }
+        else if (secondEditList.count() == 0)
+        {
+            doNewFile(secondTab, secondEditList, fileNameSecondEdit);
         }
     }
     else if (focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget()), firstTab->currentWidget() == focusEdit)
@@ -683,6 +687,14 @@ void Skeleton::shortcuts()
 
     QShortcut *newFileStc = new QShortcut(QKeySequence("Ctrl+n"), this);
 
+    QShortcut *rightTabSplitter = new QShortcut(QKeySequence("Ctrl+Alt+Right"), this);
+
+    QShortcut *leftTabSplitter = new QShortcut(QKeySequence("Ctrl+Alt+Left"), this);
+
+    QShortcut *closeTabStc = new QShortcut(QKeySequence("Ctrl+Shift+q"), this);
+
+    QShortcut *moveTab = new QShortcut(QKeySequence("Ctrl+m"), this);
+
     /* -----------------------Connection-------------------------- */
     connect(setting, &QShortcut::activated, this, &Skeleton::goToSettings);
     connect(zoomInStc, &QShortcut::activated, this, &Skeleton::zoomTextIn);
@@ -750,9 +762,9 @@ void Skeleton::shortcuts()
         }
         else if (secondTab->currentWidget() == focusEdit)
         {
-            int index = firstTab->indexOf(focusEdit);
+            int index = secondTab->indexOf(focusEdit);
 
-            if (firstTab->tabText(index) != "Untilited")
+            if (secondTab->tabText(index) != "Untilited")
             {
                 auto fileName = fileNameSecondEdit.find(focusEdit);
 
@@ -763,6 +775,87 @@ void Skeleton::shortcuts()
             }
             else
                 saveFile();
+        }
+    });
+
+    connect(rightTabSplitter, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit and not secondTab->isHidden())
+        {
+            secondTab->currentWidget()->setFocus();
+        }
+    });
+
+    connect(leftTabSplitter, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (secondTab->currentWidget() == focusEdit and not firstTab->isHidden())
+        {
+            firstTab->currentWidget()->setFocus();
+        }
+    });
+
+    connect(closeTabStc, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit)
+        {
+            int index = firstTab->indexOf(focusEdit);
+            closeFirstTab(index);
+        }
+        else if (secondTab->currentWidget() == focusEdit)
+        {
+            int index = secondTab->indexOf(focusEdit);
+            closeSecondTab(index);
+        }
+    });
+
+    connect(moveTab, &QShortcut::activated, this, [&]() {
+        focusEdit = static_cast<QTextEdit *>(QApplication::focusWidget());
+
+        if (firstTab->currentWidget() == focusEdit and not secondTab->isHidden())
+        {
+            int index = firstTab->indexOf(focusEdit);
+            secondTab->addTab(focusEdit, firstTab->tabText(index));
+            secondTab->setCurrentWidget(focusEdit);
+
+            secondEditList.push_back(focusEdit);
+
+            focusEdit->setFocus();
+
+            firstTab->removeTab(index);
+            firstEditList.removeAt(index);
+
+            if (firstEditList.count() == 0)
+            {
+                firstTab->hide();
+            }
+
+            std::cout << "firstEditList.count() -> " << firstEditList.count() << '\n';
+
+            fileNameSecondEdit.emplace(focusEdit, firstTab->tabText(index));
+        }
+        else if (secondTab->currentWidget() == focusEdit and not firstTab->isHidden())
+        {
+            int index = secondTab->indexOf(focusEdit);
+            firstTab->addTab(focusEdit, secondTab->tabText(index));
+            firstTab->setCurrentWidget(focusEdit);
+
+            firstEditList.push_back(focusEdit);
+
+            focusEdit->setFocus();
+
+            secondTab->removeTab(index);
+            secondEditList.removeAt(index);
+
+            if (secondEditList.count() == 0)
+            {
+                secondTab->hide();
+            }
+            std::cout << "secondEditList.count() -> " << secondEditList.count() << '\n';
+
+            fileNameSecondEdit.emplace(focusEdit, secondTab->tabText(index));
         }
     });
 }

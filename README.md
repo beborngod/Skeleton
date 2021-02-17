@@ -5,6 +5,16 @@
 - Multi-Tabs
 - Shortcuts
 - Themes changing
+
+Spybot theme
+![](images/spybot.png)
+
+Transparent theme
+![](images/transparent.png)
+
+PDF
+![](images/pdf.png)
+
 - Font changing
 - PDF writer
 
@@ -34,9 +44,9 @@ Its avaliable too in other Linux platforms but it wasn't tested.
 - Deploying from Source (not recomended if you have not Qt5 in your PC):
 
 	    git clone https://github.com/beborngod/Skeleton
-    
+
 	    cd Skeleton
-    
+
         cmake --build path/to/build --config Release --target all
     
         make

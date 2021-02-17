@@ -1,16 +1,27 @@
-# Release version 1.0.1
-- Five themes and one for Kvantum(transparent theme)
-- Two variantes of cxx syntax
-- Font changing
-- PDF writer
-
 ### Whats new?
-- Fixed litle bugs with Highlighter
+- Fixed actions work
+- Speed optomization
+- New shortcuts
+- Speed multitabs
 
 ### Platforms
-- Fedora Linux
-- RHEL
-- Debian
-- Ubuntu
+- Linux
 
-Its avaliable too in other Linux platforms but it wasn't tested.
+### Debian based installing
+- You have to install additional packages
+
+        sudo apt install libxcb-xinerama0
+
+- And next:
+        
+        chmod +x InstallerSkeleton.run
+    
+        ./InstallerSkeleton.run
+
+### Debian based installing
+    
+         chmod +x InstallerSkeleton.run
+    
+         ./InstallerSkeleton.run
+
+Soon this instalation willing to able rpm/deb packages.

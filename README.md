@@ -1,31 +1,37 @@
-# Skeleton opensource text editor
+# Skeleton 
+ - opensource text editor 
 
-## Themes
-- Transparent
-![](images/transparent_theme.png)
-- SpyBot
-![](images/spybot_theme.png)
+## Features
 - Multi-Tabs
 - Font changing
 - PDF writer
-![](images/creating_pdf.png)
 
-### Platforms
-- Fedora Linux
-- RHEL
-- Debian
-- Ubuntu
+### Linux platforms
+
+- Debian based
+- RedHat based
 
 Its avaliable too in other Linux platforms but it wasn't tested.
 
-## Installing
+### Debian based installing
+- You have to install additional packages
 
-    chmod +x InstallerSkeleton.run
+        sudo apt install libxcb-xinerama0
+
+- And next:
+        
+        chmod +x InstallerSkeleton.run
     
-    ./InstallerSkeleton.run
+        ./InstallerSkeleton.run
+
+### Debian based installing
+    
+         chmod +x InstallerSkeleton.run
+    
+         ./InstallerSkeleton.run
 
 
-### Deploying from Source (not recomended):
+### Deploying from Source (not recomended if you have not Qt5 in your PC):
 
 	git clone https://github.com/beborngod/Skeleton
 
